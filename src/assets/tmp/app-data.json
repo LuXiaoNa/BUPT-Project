@@ -1,0 +1,40 @@
+{
+  "app": {
+    "name": "THFD",
+    "description": "Ng-zorro admin panel front-end framework"
+  },
+  "user": {
+    "name": "Admin",
+    "avatar": "./assets/bupt.jpg",
+    "email": "bupt@edu.com"
+  },
+  "menu": [{
+    "children":[
+      {
+        "text": "首页",
+        "link": "/dashboard/first",
+        "i18n": "menu.first.page",
+        "icon": "anticon-dashboard"
+      },
+      {
+        "text": "木马活动",
+        "link": "/horse/activite",
+        "i18n": "menu.trojan.horse.activities",
+        "icon": "anticon-bulb"
+      },
+      {
+        "text": "木马流量视图",
+        "link": "/horse/flowView",
+        "i18n": "menu.trojan.horse.flow_view",
+        "icon": "anticon-appstore"
+      },
+      {
+        "text": "Account",
+        "i18n": "menu.account.settings",
+        "icon": "anticon-user",
+        "link": "/pro/account/settings"
+      }
+     ]
+    }
+  ]
+}

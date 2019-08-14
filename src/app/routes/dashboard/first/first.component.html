@@ -1,0 +1,81 @@
+<div class="alain-default__content-title">
+  <h1>
+    首页
+    <small>Welcome !</small>
+  </h1>
+</div>
+<div nz-row nzGutter="16">
+  <div nz-col nzSpan="8">
+    <nz-card [nzTitle]="'告警'" [nzHoverable]="true">
+    <!--  <nz-select [(ngModel)]="aletDistributeSelect" nzSize="small" (ngModelChange)="changeTime('alet')"
+                 class="aletDistributeSelect">
+        <nz-option *ngFor="let option of aletDistributeOptions" [nzLabel]="option.name" [nzValue]="option.id">
+        </nz-option>
+      </nz-select>-->
+      <!--<g2-card [footer]="footer1">
+        <trend flag="up" style="display:block; margin-top:2px;">
+          待处理
+          <span class="pl-sm">74</span>
+        </trend>
+        <trend flag="down">
+          已处理
+          <span class="pl-sm">74</span>
+        </trend>
+        <ng-template #footer1>
+          <p class="text-truncate mb0">
+            全部告警
+            <span class="ml-sm">74</span>
+          </p>
+        </ng-template>
+      </g2-card>-->
+      <pre style="margin-top: 18px;margin-left: 20px"><b>待处理</b>    <!--{{data.notHandleNum}}--></pre>
+      <pre style="margin-left: 20px"><b>已处理</b>   <!-- {{data.handledNum}}--></pre>
+      <nz-divider></nz-divider>
+      <pre style="margin-left: 20px"><b>全部告警</b>  <!-- {{data.threatNum}}--></pre>
+    </nz-card>
+  </div>
+  <div nz-col nzSpan="8">
+      <nz-card  [nzTitle]="'捕获报文'" [nzHoverable]="true">
+        <div echarts [options]="AaptureOption" class="demo-chart" style="height: 155px;"></div>
+  <!--       <nz-select [(ngModel)]="AaptureMessageSelect" nzSize="small" (ngModelChange)="changeTime('massage')"
+                  class="AaptureMessageSelect">
+         <nz-option *ngFor="let option of AaptureMessageOptions" [nzLabel]="option.name" [nzValue]="option.id">
+         </nz-option>
+       </nz-select>-->
+      </nz-card>
+  </div>
+  <div nz-col nzSpan="8">
+    <nz-card  [nzTitle]="'检测流量'" [nzHoverable]="true">
+      <div echarts [options]="FlowOption" class="demo-chart" style="height: 155px;"></div>
+    <!--   <nz-select [(ngModel)]="DetectFlowSelect" nzSize="small" (ngModelChange)="changeTime('flow')"
+                  class="DetectFlowSelect">
+         <nz-option *ngFor="let option of DetectFlowOptions" [nzLabel]="option.name" [nzValue]="option.id">
+         </nz-option>
+       </nz-select>-->
+    </nz-card>
+  </div>
+</div>
+<div nz-row nzGutter="16">
+    <nz-card [nzBordered]="true" [nzTitle]="'威胁活动'"  [nzHoverable]="true">
+      <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger (nzCurrentPageDataChange)="currentPageDataChange($event)">
+       <thead>
+       <tr>
+         <th>时间</th>
+         <th>源IP</th>
+         <th>目的IP</th>
+         <th>请求类型</th>
+         <th>威胁信息</th>
+       </tr>
+       </thead>
+        <tbody>
+        <tr *ngFor="let data of filterTable.data">
+          <td>{{ data.time | date:"yyyy-MM-dd HH:mm:ss" }}</td>
+          <td>{{ data.srcIP }}</td>
+          <td>{{ data.desIP }}</td>
+          <td>{{ data.type }}</td>
+          <td>{{ data.info }}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+</div>
