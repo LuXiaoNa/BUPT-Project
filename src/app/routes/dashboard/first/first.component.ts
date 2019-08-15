@@ -36,6 +36,10 @@ export class DashboardFirstComponent implements OnInit {
   yDetectFlowData=[];
   //捕获报文y轴数据
   xDetectFlowData=[];
+  //威胁
+  threatenSelect:any;
+  //影响威胁单选框数据
+  threatenOptions=[];
   time:string;
   srcIP:string;
   desIP:string;
@@ -43,39 +47,50 @@ export class DashboardFirstComponent implements OnInit {
   info:string;
   //表格数据
   listOfDisplayData=[];
+  //总条数
+  total:number;
+  // 当前页码
+  pageIndex: number;
+  // 一页显示的条数
+  pageSize: number;
   constructor(
     private http: _HttpClient
   ) {}
   ngOnInit() {
     // 时间对象定义
     const timer = [
-      { id: 1, name: '最近1分钟' },
-      { id: 2, name: '最近1小时' },
-      { id: 3, name: '最近24小时' },
-      { id: 4, name: '最近7天' },
+      { id: 1, name: '5分钟' },
+      { id: 2, name: '1小时' },
+      { id: 3, name: '24小时' },
+     /* { id: 4, name: '最近7天' },*/
     ];
+    this.pageIndex=1;
+    this.pageSize=10;
+    this.total=0;
     //设置警告图表单选框初始值
-    this.getAlet(timer);
+    this.optionSet(timer);
     this.getFlowdata();
     this.aletDistributeSet();
     this.AaptureMessageSet();
-    this.DetectFlowSet()
+    this.DetectFlowSet();
   }
-  getAlet(timer){
-    this.aletDistributeOptions=timer;
-    this.AaptureMessageOptions=timer;
-    this.DetectFlowOptions=timer;
+  optionSet(timer){
+    this.aletDistributeOptions = timer;
+    this.AaptureMessageOptions = timer;
+    this.DetectFlowOptions = timer;
+    this.threatenOptions = timer;
     this.aletDistributeSelect = 1;
     this.AaptureMessageSelect = 1;
     this.DetectFlowSelect = 1;
+    this.threatenSelect = 1;
   }
 
   timeSet(timer) {
     let stime;
-    let etime = moment();
+ /*   let etime = moment();*/
     switch (timer) {
       case 1:
-        stime = moment().subtract(1, 'minutes');
+        stime = moment().subtract(5, 'minutes');
         break;
       case 2:
         stime = moment().subtract(1, 'hours');
@@ -83,13 +98,13 @@ export class DashboardFirstComponent implements OnInit {
       case 3:
         stime = moment().subtract(1, 'days');
         break;
-      case 4:
+   /*   case 4:
         stime = moment().subtract(7, 'days');
-        break;
+        break;*/
     }
     return {
       stime: stime['_d'].getTime(),
-      etime: etime['_d'].getTime(),
+     /* etime: etime['_d'].getTime(),*/
     };
   }
 
@@ -104,32 +119,46 @@ export class DashboardFirstComponent implements OnInit {
       case 'flow':
         this.DetectFlowSet();
         break;
+      case 'threaten':
+        this.getFlowdata();
+        break;
     }
   }
   //获取警告数据
+  notHandleNum:Number;
+  handledNum:Number;
+  threatNum:Number;
   aletDistributeSet(){
     let time = this.timeSet(this.aletDistributeSelect);
-    this.http.get(environment.PUBLIC_URL+'/info/threatNum').subscribe((req:any[])=>{
+    console.log(time.stime);
+    let params={
+      time:time.stime,
+    };
+    this.http.get(environment.PUBLIC_URL+'/info/threatNum',params).subscribe((req:any[])=>{
       if(req['data']!=null){
-        console.log(req['data']);
+        this.notHandleNum=req['data'][0]['notHandleNum'];
+        this.handledNum=req['data'][0]['handledNum'];
+        this.threatNum=req['data'][0]['threatNum'];
       }
     });
   }
   //获取报文数据
   AaptureMessageSet(){
-   /* let time = this.timeSet(this.AaptureMessageSelect);*/
-    this.http.get(environment.PUBLIC_URL+'/info/packageNum').subscribe((req:any[])=>{
+    let time = this.timeSet(this.AaptureMessageSelect);
+    let params={
+      time:time.stime,
+    };
+    this.http.get(environment.PUBLIC_URL+'/info/packageNum',params).subscribe((req:any[])=>{
       if(req['data']!=null){
         for (let i=0;i<req['data'].length;i++){
           this.yAaptureData.push(req['data'][i]['packageNum']);
-          var day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
+          let day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
           this.xAaptureData.push(day);
         }
-        console.log(req['data']);
-        console.log(this.yAaptureData);
-        console.log(this.xAaptureData);
       }
     });
+    console.log( this.xAaptureData);
+    console.log(this.yAaptureData)
     this.AaptureOption = {
       tooltip: {
         trigger: 'axis',
@@ -146,21 +175,20 @@ export class DashboardFirstComponent implements OnInit {
         },
       ],
     };
- /*   this.xAaptureData=[];
-    this.yAaptureData=[];*/
   }
   //获取检测流量数据
   DetectFlowSet(){
     let time = this.timeSet(this.DetectFlowSelect);
-    this.http.get(environment.PUBLIC_URL+'/info/flowNum').subscribe((req:any[])=>{
+    let params={
+      time:time.stime,
+    };
+    this.http.get(environment.PUBLIC_URL+'/info/flowNum',params).subscribe((req:any[])=>{
       if(req['data']!=null){
         for (let i=0;i<req['data'].length;i++){
           this.yDetectFlowData.push(req['data'][i]['flowNum']);
           let day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
           this.xDetectFlowData.push(day);
         }
-        console.log(this.yDetectFlowData);
-        console.log(this.xDetectFlowData);
       }
     });
 
@@ -183,13 +211,28 @@ export class DashboardFirstComponent implements OnInit {
   }
   //获取威胁信息
   getFlowdata(){
-    this.http.get(environment.PUBLIC_URL+'/info/trojan').subscribe((req:any[]) => {
+    let time = this.timeSet(this.DetectFlowSelect);
+    let params={
+      time:time.stime,
+      page:(this.pageIndex-1),
+      size:this.pageSize
+    };
+    console.log(this.pageIndex-1);
+    console.log(this.pageSize)
+    this.http.get(environment.PUBLIC_URL+'/info/trojan',params).subscribe((req:any[]) => {
       if(req['data']!=null){
-        this.listOfDisplayData=req['data'];
+        this.listOfDisplayData=req['data'][0]['content'];
+        console.log(req['data'][0]['content']);
+        this.total=req['data'][0]['totalElements'];
+        console.log(req)
+        console.log(req['data'][0]['totalElements'])
       }else{
         this.listOfDisplayData=[];
       }
     });
+  }
+  refreshStatus(){
+
   }
   currentPageDataChange($event): void {
     this.listOfDisplayData = $event;

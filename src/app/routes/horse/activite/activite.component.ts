@@ -17,6 +17,12 @@ export class HorseActiviteComponent implements OnInit {
   /*  controlArray: any[] = [];
    isCollapse = true;*/
   listOfDisplayData=[];
+  //总条数
+  total:number;
+  // 当前页码
+  pageIndex: number;
+  // 一页显示的条数
+  pageSize: number;
   constructor(
     private http: _HttpClient,
     private fb: FormBuilder,
@@ -33,6 +39,9 @@ export class HorseActiviteComponent implements OnInit {
     });
   }
   ngOnInit() {
+    this.pageIndex=1;
+    this.pageSize=10;
+    this.total=0;
     this.getData();
   }
 
@@ -41,11 +50,19 @@ export class HorseActiviteComponent implements OnInit {
 
   }
   getData(){
-    this.http.get(environment.PUBLIC_URL+'/trojan').subscribe((req:any[]) => {
+    let params={
+      page:(this.pageIndex-1),
+      size:this.pageSize
+    };
+    this.http.get(environment.PUBLIC_URL+'/trojan',params).subscribe((req:any[]) => {
       if(req['data']!=null){
-        this.listOfDisplayData=req['data'];
+        this.listOfDisplayData=req['data'][0]['content'];
+        console.log(req['data'][0]['content']);
+        this.total=req['data'][0]['totalElements'];
+        console.log(req['data'][0]['totalElements'])
       }else{
         this.listOfDisplayData=[];
+        this.total=0
       }
     });
   }
@@ -53,6 +70,9 @@ export class HorseActiviteComponent implements OnInit {
  /* initForm(){
     this.validateForm.reset();
   }*/
+  refreshStatus(){
+
+  }
   currentPageDataChange(){
 
   }

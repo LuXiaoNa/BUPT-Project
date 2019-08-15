@@ -6,58 +6,57 @@
 </div>
 <div nz-row nzGutter="16">
   <div nz-col nzSpan="8">
-    <nz-card [nzTitle]="'告警'" [nzHoverable]="true">
-    <!--  <nz-select [(ngModel)]="aletDistributeSelect" nzSize="small" (ngModelChange)="changeTime('alet')"
+    <nz-card [nzTitle]="'告警'" [nzHoverable]="true" >
+      <nz-select [(ngModel)]="aletDistributeSelect" nzSize="small" (ngModelChange)="changeTime('alet')"
                  class="aletDistributeSelect">
         <nz-option *ngFor="let option of aletDistributeOptions" [nzLabel]="option.name" [nzValue]="option.id">
         </nz-option>
-      </nz-select>-->
-      <!--<g2-card [footer]="footer1">
-        <trend flag="up" style="display:block; margin-top:2px;">
-          待处理
-          <span class="pl-sm">74</span>
-        </trend>
-        <trend flag="down">
-          已处理
-          <span class="pl-sm">74</span>
-        </trend>
-        <ng-template #footer1>
-          <p class="text-truncate mb0">
-            全部告警
-            <span class="ml-sm">74</span>
-          </p>
-        </ng-template>
-      </g2-card>-->
-      <pre style="margin-top: 18px;margin-left: 20px"><b>待处理</b>    <!--{{data.notHandleNum}}--></pre>
-      <pre style="margin-left: 20px"><b>已处理</b>   <!-- {{data.handledNum}}--></pre>
-      <nz-divider></nz-divider>
-      <pre style="margin-left: 20px"><b>全部告警</b>  <!-- {{data.threatNum}}--></pre>
+      </nz-select>
+      <div style="height: 210px">
+        <g2-card [footer]="footer1">
+          <trend flag="up" style="display:block; margin-top:2px;">
+            待处理
+            <span class="pl-sm">   {{notHandleNum}}</span>
+          </trend>
+          <trend flag="down">
+            已处理
+            <span class="pl-sm">    {{handledNum}}</span>
+          </trend>
+          <ng-template #footer1>
+            <p class="text-truncate mb0">
+              全部告警
+              <span class="ml-sm">   {{threatNum}}</span>
+            </p>
+          </ng-template>
+        </g2-card>
+      </div>
+
     </nz-card>
   </div>
   <div nz-col nzSpan="8">
       <nz-card  [nzTitle]="'捕获报文'" [nzHoverable]="true">
-        <div echarts [options]="AaptureOption" class="demo-chart" style="height: 155px;"></div>
-  <!--       <nz-select [(ngModel)]="AaptureMessageSelect" nzSize="small" (ngModelChange)="changeTime('massage')"
+        <div echarts [options]="AaptureOption" class="demo-chart" style="height: 210px;"></div>
+         <nz-select [(ngModel)]="AaptureMessageSelect" nzSize="small" (ngModelChange)="changeTime('massage')"
                   class="AaptureMessageSelect">
          <nz-option *ngFor="let option of AaptureMessageOptions" [nzLabel]="option.name" [nzValue]="option.id">
          </nz-option>
-       </nz-select>-->
+       </nz-select>
       </nz-card>
   </div>
   <div nz-col nzSpan="8">
     <nz-card  [nzTitle]="'检测流量'" [nzHoverable]="true">
-      <div echarts [options]="FlowOption" class="demo-chart" style="height: 155px;"></div>
-    <!--   <nz-select [(ngModel)]="DetectFlowSelect" nzSize="small" (ngModelChange)="changeTime('flow')"
+      <div echarts [options]="FlowOption" class="demo-chart" style="height: 210px;"></div>
+       <nz-select [(ngModel)]="DetectFlowSelect" nzSize="small" (ngModelChange)="changeTime('flow')"
                   class="DetectFlowSelect">
          <nz-option *ngFor="let option of DetectFlowOptions" [nzLabel]="option.name" [nzValue]="option.id">
          </nz-option>
-       </nz-select>-->
+       </nz-select>
     </nz-card>
   </div>
 </div>
-<div nz-row nzGutter="16">
+<div nz-row nzGutter="15">
     <nz-card [nzBordered]="true" [nzTitle]="'威胁活动'"  [nzHoverable]="true">
-      <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger (nzCurrentPageDataChange)="currentPageDataChange($event)">
+      <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger  [nzShowQuickJumper]="true" [nzTotal]="total" nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
        <thead>
        <tr>
          <th>时间</th>
@@ -77,5 +76,10 @@
         </tr>
         </tbody>
       </nz-table>
+      <nz-select [(ngModel)]="threatenSelect" nzSize="small" (ngModelChange)="changeTime('threaten')"
+                 class="threatenSelect">
+        <nz-option *ngFor="let option of threatenOptions" [nzLabel]="option.name" [nzValue]="option.id">
+        </nz-option>
+      </nz-select>
     </nz-card>
 </div>
