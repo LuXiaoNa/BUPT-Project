@@ -14,6 +14,7 @@ import {
 export class HorseActiviteComponent implements OnInit {
   //查询表单
   validateForm:FormGroup;
+  visible=false;
   /*  controlArray: any[] = [];
    isCollapse = true;*/
   listOfDisplayData=[];
@@ -32,9 +33,9 @@ export class HorseActiviteComponent implements OnInit {
       desIP  : [''],
       srcPort:[''],
       desPort:[''],
-      /*   protocol:[''],
-       trojanType:[''],
-       threatLevel:[''],*/
+      protocol:[''],
+      type:[''],
+      threatLevel:[''],
       time:['']
     });
   }
@@ -46,8 +47,39 @@ export class HorseActiviteComponent implements OnInit {
   }
 
   //查询数据
+  open(){
+    this.visible = true;
+    this.pageIndex=1;
+    this.pageSize=10;
+  }
+  close(){
+    this.visible = false;
+  }
   search(){
-
+   const params={
+     page:(this.pageIndex-1),
+     size:this.pageSize,
+     srcIP:this.validateForm.value.srcIP,
+     desIP:this.validateForm.value.desIP,
+     srcPort:this.validateForm.value.srcPort,
+     desPort:this.validateForm.value.desPort,
+     protocol:this.validateForm.value.protocol,
+     type:this.validateForm.value.type,
+     threatLevel:this.validateForm.value.threatLevel,
+   };
+   this.http.get(environment.PUBLIC_URL+'/trojan',params).subscribe((req:any[])=>{
+     if(req['data']!=null){
+       this.listOfDisplayData=req['data'][0]['content'];
+       this.total=req['data'][0]['totalElements'];
+     }else{
+       this.listOfDisplayData=[];
+       this.total=0;
+     }
+   })
+  }
+  //重置查询表单
+  initForm(){
+    this.validateForm.reset();
   }
   getData(){
     let params={
@@ -57,19 +89,13 @@ export class HorseActiviteComponent implements OnInit {
     this.http.get(environment.PUBLIC_URL+'/trojan',params).subscribe((req:any[]) => {
       if(req['data']!=null){
         this.listOfDisplayData=req['data'][0]['content'];
-        console.log(req['data'][0]['content']);
         this.total=req['data'][0]['totalElements'];
-        console.log(req['data'][0]['totalElements'])
       }else{
         this.listOfDisplayData=[];
         this.total=0
       }
     });
   }
-  //重置查询表单
- /* initForm(){
-    this.validateForm.reset();
-  }*/
   refreshStatus(){
 
   }

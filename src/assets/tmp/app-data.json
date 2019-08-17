@@ -8,33 +8,39 @@
     "avatar": "./assets/bupt.jpg",
     "email": "bupt@edu.com"
   },
-  "menu": [{
-    "children":[
-      {
-        "text": "首页",
-        "link": "/dashboard/first",
-        "i18n": "menu.first.page",
-        "icon": "anticon-dashboard"
-      },
-      {
-        "text": "木马活动",
-        "link": "/horse/activite",
-        "i18n": "menu.trojan.horse.activities",
-        "icon": "anticon-bulb"
-      },
-      {
-        "text": "木马流量视图",
-        "link": "/horse/flowView",
-        "i18n": "menu.trojan.horse.flow_view",
-        "icon": "anticon-appstore"
-      },
-      {
-        "text": "Account",
-        "i18n": "menu.account.settings",
-        "icon": "anticon-user",
-        "link": "/pro/account/settings"
-      }
-     ]
+  "menu": [
+    {
+      "children": [
+        {
+          "text": "首页",
+          "link": "/dashboard/first",
+          "i18n": "menu.first.page",
+          "icon": "anticon-dashboard"
+        },
+        {
+          "text": "木马检测",
+          "i18n": "menu.trojans.detection",
+          "icon": "anticon-bulb",
+          "children": [
+            {
+              "text": "木马活动",
+              "link": "/horse/activite",
+              "i18n": "menu.trojan.horse.activities"
+            },
+            {
+              "text": "木马流量视图",
+              "link": "/horse/flowView",
+              "i18n": "menu.trojan.horse.flow_view"
+            }
+          ]
+        },
+        {
+          "text": "Account",
+          "i18n": "menu.account.settings",
+          "icon": "anticon-user",
+          "link": "/pro/account/settings"
+        }
+      ]
     }
   ]
 }

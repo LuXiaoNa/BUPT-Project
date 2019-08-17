@@ -15,7 +15,7 @@ import {environment} from "@env/environment";
 })
 export class HorseFlowViewComponent implements OnInit {
   //影响捕获报文数据图
-  /* FlowOption:any;*/
+   FlowOption:any;
   //影响捕获报文数据图选框数据
   FlowSelect:any;
   //影响捕获报文数据图选框数据源
@@ -35,10 +35,10 @@ export class HorseFlowViewComponent implements OnInit {
   ngOnInit() {
     // 时间对象定义
     const timer = [
-      { id: 1, name: '最近1分钟' },
+      { id: 1, name: '最近5分钟' },
       { id: 2, name: '最近1小时' },
       { id: 3, name: '最近24小时' },
-      { id: 4, name: '最近7天' },
+      /*{ id: 4, name: '最近7天' },*/
     ];
     //设置警告图表单选框初始值
     this.getAlet(timer);
@@ -66,7 +66,7 @@ export class HorseFlowViewComponent implements OnInit {
     let etime = moment();
     switch (timer) {
       case 1:
-        stime = moment().subtract(1, 'minutes');
+        stime = moment().subtract(5, 'minutes');
         break;
       case 2:
         stime = moment().subtract(1, 'hours');
@@ -83,10 +83,10 @@ export class HorseFlowViewComponent implements OnInit {
       etime: etime['_d'].getTime(),
     };
   }
-  FlowOption = {
-  /*  title: {
+/*  FlowOption = {
+  /!*  title: {
       text: '流量视图'
-    },*/
+    },*!/
     tooltip : {
       trigger: 'axis',
       axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -168,10 +168,14 @@ export class HorseFlowViewComponent implements OnInit {
         data:[62, 82, 91, 84, 109, 110, 120]
       }
     ]
-  };
+  };*/
   changeTime() {
     let time = this.timeSet(this.FlowSelect);
-    this.http.get(environment.PUBLIC_URL+'/trojan/view/flow').subscribe((req:any[])=>{
+    let params={
+      time:time.stime
+    };
+    console.log(time.stime)
+    this.http.get(environment.PUBLIC_URL+'/trojan/view/flow',params).subscribe((req:any[])=>{
       if(req['data']!=null){
         for (let i=0;i<req['data'].length;i++){
           this.yProtocalData.push(req['data'][i]['protocal']);

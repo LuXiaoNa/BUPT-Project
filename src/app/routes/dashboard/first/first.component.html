@@ -7,11 +7,11 @@
 <div nz-row nzGutter="16">
   <div nz-col nzSpan="8">
     <nz-card [nzTitle]="'告警'" [nzHoverable]="true" >
-      <nz-select [(ngModel)]="aletDistributeSelect" nzSize="small" (ngModelChange)="changeTime('alet')"
+    <!--  <nz-select [(ngModel)]="aletDistributeSelect" nzSize="small" (ngModelChange)="changeTime('alet')"
                  class="aletDistributeSelect">
         <nz-option *ngFor="let option of aletDistributeOptions" [nzLabel]="option.name" [nzValue]="option.id">
         </nz-option>
-      </nz-select>
+      </nz-select>-->
       <div style="height: 210px">
         <g2-card [footer]="footer1">
           <trend flag="up" style="display:block; margin-top:2px;">
@@ -54,9 +54,11 @@
     </nz-card>
   </div>
 </div>
-<div nz-row nzGutter="15">
+<div nz-row nzGutter="16">
     <nz-card [nzBordered]="true" [nzTitle]="'威胁活动'"  [nzHoverable]="true">
-      <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger  [nzShowQuickJumper]="true" [nzTotal]="total" nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
+      <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger  [nzShowQuickJumper]="true"
+                [nzTotal]="total" nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
+                (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
        <thead>
        <tr>
          <th>时间</th>

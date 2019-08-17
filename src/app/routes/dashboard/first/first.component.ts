@@ -13,29 +13,21 @@ import {environment} from "@env/environment";
 export class DashboardFirstComponent implements OnInit {
   eventSort: any;
   //影响警告分布数据图
-  aletDistributeSelect:any;
+/*  aletDistributeSelect:any;*/
   //影响警告分布数据图单选框数据
-  aletDistributeOptions=[];
+/*  aletDistributeOptions=[];*/
   //影响捕获报文数据图
   AaptureOption:any;
   //影响捕获报文数据图选框数据
   AaptureMessageSelect:any;
   //影响捕获报文数据图选框数据源
   AaptureMessageOptions=[];
-  //捕获报文x轴数据
-  yAaptureData=[];
-  //捕获报文y轴数据
-  xAaptureData=[];
   //影响检测流量数据图
   FlowOption:any;
   //影响检测流量数据图单选框数据
   DetectFlowSelect:any;
   //影响检测流量数据图选框数据源
   DetectFlowOptions=[];
-  //捕获报文x轴数据
-  yDetectFlowData=[];
-  //捕获报文y轴数据
-  xDetectFlowData=[];
   //威胁
   threatenSelect:any;
   //影响威胁单选框数据
@@ -57,6 +49,7 @@ export class DashboardFirstComponent implements OnInit {
     private http: _HttpClient
   ) {}
   ngOnInit() {
+    this.aletDistributeSet();
     // 时间对象定义
     const timer = [
       { id: 1, name: '5分钟' },
@@ -69,25 +62,24 @@ export class DashboardFirstComponent implements OnInit {
     this.total=0;
     //设置警告图表单选框初始值
     this.optionSet(timer);
-    this.getFlowdata();
-    this.aletDistributeSet();
     this.AaptureMessageSet();
     this.DetectFlowSet();
+    this.getFlowdata();
   }
   optionSet(timer){
-    this.aletDistributeOptions = timer;
+   /* this.aletDistributeOptions = timer;*/
     this.AaptureMessageOptions = timer;
     this.DetectFlowOptions = timer;
     this.threatenOptions = timer;
-    this.aletDistributeSelect = 1;
-    this.AaptureMessageSelect = 1;
-    this.DetectFlowSelect = 1;
-    this.threatenSelect = 1;
+   /* this.aletDistributeSelect = 3;*/
+    this.AaptureMessageSelect = 3;
+    this.DetectFlowSelect = 3;
+    this.threatenSelect = 3;
   }
 
   timeSet(timer) {
     let stime;
- /*   let etime = moment();*/
+   /* let etime = moment();*/
     switch (timer) {
       case 1:
         stime = moment().subtract(5, 'minutes');
@@ -104,15 +96,15 @@ export class DashboardFirstComponent implements OnInit {
     }
     return {
       stime: stime['_d'].getTime(),
-     /* etime: etime['_d'].getTime(),*/
+    /*  etime: etime['_d'].getTime(),*/
     };
   }
 
   changeTime(type) {
-    switch (type) {
+    switch (type) {/*
       case 'alet':
         this.aletDistributeSet();
-        break;
+        break;*/
       case 'massage':
         this.AaptureMessageSet();
         break;
@@ -129,18 +121,47 @@ export class DashboardFirstComponent implements OnInit {
   handledNum:Number;
   threatNum:Number;
   aletDistributeSet(){
-    let time = this.timeSet(this.aletDistributeSelect);
-    console.log(time.stime);
+ /*   let time = this.timeSet(this.aletDistributeSelect);
     let params={
       time:time.stime,
-    };
-    this.http.get(environment.PUBLIC_URL+'/info/threatNum',params).subscribe((req:any[])=>{
+    };*/
+    this.http.get(environment.PUBLIC_URL+'/info/threatNum').subscribe((req:any[])=>{
       if(req['data']!=null){
         this.notHandleNum=req['data'][0]['notHandleNum'];
         this.handledNum=req['data'][0]['handledNum'];
         this.threatNum=req['data'][0]['threatNum'];
       }
     });
+  }
+/*  报文图描绘*/
+  AaptureDraw(data){
+    if(data.length === 0){
+      this.AaptureOption={};
+    }else{
+      let yAaptureData=[];
+      let xAaptureData=[];
+      for (let i=0;i<data.length;i++){
+        yAaptureData.push(data[i]['packageNum']);
+        let day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
+        xAaptureData.push(day);
+      }
+      this.AaptureOption = {
+        tooltip: {
+          trigger: 'axis',
+        },
+        color: ['#7cb5ec'],
+        xAxis: { type: 'category', data: xAaptureData },
+        yAxis: { name: '流量(M)', type: 'value', splitLine: { show: false } },
+        series: [
+          {
+            symbol: 'none',
+            data: yAaptureData,
+            type: 'line',
+            areaStyle: { color: ['#7cb5ec'] },
+          },
+        ],
+      };
+    }
   }
   //获取报文数据
   AaptureMessageSet(){
@@ -149,32 +170,45 @@ export class DashboardFirstComponent implements OnInit {
       time:time.stime,
     };
     this.http.get(environment.PUBLIC_URL+'/info/packageNum',params).subscribe((req:any[])=>{
+      let data;
       if(req['data']!=null){
-        for (let i=0;i<req['data'].length;i++){
-          this.yAaptureData.push(req['data'][i]['packageNum']);
-          let day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
-          this.xAaptureData.push(day);
-        }
+        data = req['data'];
+        console.log(data);
+        this.AaptureDraw(data);
+      }else{
+        data = [];
       }
     });
-    console.log( this.xAaptureData);
-    console.log(this.yAaptureData)
-    this.AaptureOption = {
-      tooltip: {
-        trigger: 'axis',
-      },
-      color: ['#7cb5ec'],
-      xAxis: { type: 'category', data: this.xAaptureData },
-      yAxis: { name: '流量(M)', type: 'value', splitLine: { show: false } },
-      series: [
-        {
-          symbol: 'none',
-          data: this.yAaptureData,
-          type: 'line',
-          areaStyle: { color: ['#7cb5ec'] },
+  }
+  //检测流量绘图
+  DetectFlowDraw(data){
+    if(data.lenght === 0){
+      this.FlowOption={}
+    }else{
+      let yDetectFlowData=[];
+      let xDetectFlowData=[];
+      for (let i=0;i<data.length;i++){
+        yDetectFlowData.push(data[i]['flowNum']);
+        let day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
+       xDetectFlowData.push(day);
+      }
+      this.FlowOption={
+        tooltip: {
+          trigger: 'axis',
         },
-      ],
-    };
+        color: ['#7cb5ec'],
+        xAxis: { type: 'category', data: xDetectFlowData },
+        yAxis: { name: '流量(M)', type: 'value', splitLine: { show: false } },
+        series: [
+          {
+            symbol: 'none',
+            data: yDetectFlowData,
+            type: 'line',
+            areaStyle: { color: ['#7cb5ec'] },
+          },
+        ],
+      }
+    }
   }
   //获取检测流量数据
   DetectFlowSet(){
@@ -183,31 +217,14 @@ export class DashboardFirstComponent implements OnInit {
       time:time.stime,
     };
     this.http.get(environment.PUBLIC_URL+'/info/flowNum',params).subscribe((req:any[])=>{
+      let data;
       if(req['data']!=null){
-        for (let i=0;i<req['data'].length;i++){
-          this.yDetectFlowData.push(req['data'][i]['flowNum']);
-          let day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
-          this.xDetectFlowData.push(day);
-        }
+        data=req['data'];
+        this.DetectFlowDraw(data);
+      }else{
+        data=[];
       }
     });
-
-    this.FlowOption={
-      tooltip: {
-        trigger: 'axis',
-      },
-      color: ['#7cb5ec'],
-      xAxis: { type: 'category', data: this.xDetectFlowData },
-      yAxis: { name: '流量(M)', type: 'value', splitLine: { show: false } },
-      series: [
-        {
-          symbol: 'none',
-          data: this.yDetectFlowData,
-          type: 'line',
-          areaStyle: { color: ['#7cb5ec'] },
-        },
-      ],
-    }
   }
   //获取威胁信息
   getFlowdata(){
@@ -217,22 +234,18 @@ export class DashboardFirstComponent implements OnInit {
       page:(this.pageIndex-1),
       size:this.pageSize
     };
-    console.log(this.pageIndex-1);
-    console.log(this.pageSize)
     this.http.get(environment.PUBLIC_URL+'/info/trojan',params).subscribe((req:any[]) => {
       if(req['data']!=null){
         this.listOfDisplayData=req['data'][0]['content'];
-        console.log(req['data'][0]['content']);
         this.total=req['data'][0]['totalElements'];
-        console.log(req)
-        console.log(req['data'][0]['totalElements'])
       }else{
         this.listOfDisplayData=[];
+        this.total=0;
       }
     });
   }
   refreshStatus(){
-
+    this.getFlowdata();
   }
   currentPageDataChange($event): void {
     this.listOfDisplayData = $event;
