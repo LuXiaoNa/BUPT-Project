@@ -6,6 +6,7 @@
 
 <nz-card [nzHoverable]="true">
   <button nz-button nzType="primary" (click)="open()" style="margin-bottom: 10px"><i nz-icon type="search"></i>{{ 'button.search' | translate }}</button>
+  <button nz-button  (click)="reset()" style="margin-bottom: 10px"><i nz-icon type="reset"></i>重置数据</button>
   <nz-drawer
     [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
     [nzMaskClosable]="false"

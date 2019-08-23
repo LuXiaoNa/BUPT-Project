@@ -11,8 +11,10 @@ import {environment} from "@env/environment";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardFirstComponent implements OnInit {
-  eventSort: any;
   //影响警告分布数据图
+   notHandleNum:number;
+   handledNum:number;
+   threatNum:number;
 /*  aletDistributeSelect:any;*/
   //影响警告分布数据图单选框数据
 /*  aletDistributeOptions=[];*/
@@ -79,7 +81,6 @@ export class DashboardFirstComponent implements OnInit {
 
   timeSet(timer) {
     let stime;
-   /* let etime = moment();*/
     switch (timer) {
       case 1:
         stime = moment().subtract(5, 'minutes');
@@ -95,19 +96,26 @@ export class DashboardFirstComponent implements OnInit {
         break;*/
     }
     return {
-      stime: stime['_d'].getTime(),
-    /*  etime: etime['_d'].getTime(),*/
+      stime: stime['_d'].getTime()
     };
   }
-
-  changeTime(type) {
-    switch (type) {/*
+/*  changeAapture(){
+    this.AaptureMessageSet();
+  }
+  changeDetect(){
+    this.DetectFlowSet();
+  }
+  changeThreaten(){
+    this.getFlowdata();
+  }*/
+/*  changeTime(type) {
+    switch (type) {/!*
       case 'alet':
         this.aletDistributeSet();
-        break;*/
-      case 'massage':
+        break;*!/
+  /!*    case 'massage':
         this.AaptureMessageSet();
-        break;
+        break;*!/
       case 'flow':
         this.DetectFlowSet();
         break;
@@ -115,16 +123,9 @@ export class DashboardFirstComponent implements OnInit {
         this.getFlowdata();
         break;
     }
-  }
+  }*/
   //获取警告数据
-  notHandleNum:Number;
-  handledNum:Number;
-  threatNum:Number;
   aletDistributeSet(){
- /*   let time = this.timeSet(this.aletDistributeSelect);
-    let params={
-      time:time.stime,
-    };*/
     this.http.get(environment.PUBLIC_URL+'/info/threatNum').subscribe((req:any[])=>{
       if(req['data']!=null){
         this.notHandleNum=req['data'][0]['notHandleNum'];
@@ -140,7 +141,7 @@ export class DashboardFirstComponent implements OnInit {
     }else{
       let yAaptureData=[];
       let xAaptureData=[];
-      for (let i=0;i<data.length;i++){
+      for (let i=data.length-1;i>-1;i--){
         yAaptureData.push(data[i]['packageNum']);
         let day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
         xAaptureData.push(day);
@@ -173,11 +174,10 @@ export class DashboardFirstComponent implements OnInit {
       let data;
       if(req['data']!=null){
         data = req['data'];
-        console.log(data);
-        this.AaptureDraw(data);
       }else{
         data = [];
       }
+      this.AaptureDraw(data);
     });
   }
   //检测流量绘图
@@ -187,10 +187,10 @@ export class DashboardFirstComponent implements OnInit {
     }else{
       let yDetectFlowData=[];
       let xDetectFlowData=[];
-      for (let i=0;i<data.length;i++){
+      for (let i=data.length-1;i>-1;i--){
         yDetectFlowData.push(data[i]['flowNum']);
         let day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
-       xDetectFlowData.push(day);
+        xDetectFlowData.push(day);
       }
       this.FlowOption={
         tooltip: {
@@ -220,10 +220,10 @@ export class DashboardFirstComponent implements OnInit {
       let data;
       if(req['data']!=null){
         data=req['data'];
-        this.DetectFlowDraw(data);
       }else{
         data=[];
       }
+      this.DetectFlowDraw(data);
     });
   }
   //获取威胁信息
@@ -248,6 +248,5 @@ export class DashboardFirstComponent implements OnInit {
     this.getFlowdata();
   }
   currentPageDataChange($event): void {
-    this.listOfDisplayData = $event;
   }
 }

@@ -23,9 +23,6 @@ export class HorseFlowViewComponent implements OnInit {
 
   listOfParentData: any[] = [];
   listOfChildrenData: any[] = [];
-  xFlowData=[];
-  yFlowData=[];
-  yProtocalData=[];
 
   constructor(
     private http: _HttpClient,
@@ -59,11 +56,11 @@ export class HorseFlowViewComponent implements OnInit {
   }
   getAlet(timer){
     this.FlowOptionsDate=timer;
-    this.FlowSelect = 1;
+    this.FlowSelect = 3;
   }
   timeSet(timer) {
     let stime;
-    let etime = moment();
+  /*  let etime = moment();*/
     switch (timer) {
       case 1:
         stime = moment().subtract(5, 'minutes');
@@ -74,27 +71,24 @@ export class HorseFlowViewComponent implements OnInit {
       case 3:
         stime = moment().subtract(1, 'days');
         break;
-      case 4:
+     /* case 4:
         stime = moment().subtract(7, 'days');
-        break;
+        break;*/
     }
     return {
       stime: stime['_d'].getTime(),
-      etime: etime['_d'].getTime(),
+    /*  etime: etime['_d'].getTime(),*/
     };
   }
-/*  FlowOption = {
-  /!*  title: {
-      text: '流量视图'
-    },*!/
-    tooltip : {
+ /* FlowOption = {
+    tooltip: {
       trigger: 'axis',
-      axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+      axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
       }
     },
     legend: {
-      data:['TCP','UDP','ICMP','POP3','IP','LOOP','BPQ','DEC','FTP']
+      data: ['TCP', 'UDP', 'DNS']
     },
     grid: {
       left: '3%',
@@ -102,176 +96,121 @@ export class HorseFlowViewComponent implements OnInit {
       bottom: '3%',
       containLabel: true
     },
-    xAxis : [
+    xAxis: [
       {
-        type : 'category',
-        data : ['周一','周二','周三','周四','周五','周六','周日']
+        type: 'category',
+        data: ['2018.2.3', '2018.3.3', '2018.4.2', '2018.5.3', '2018.6.3', '2018.7.2', '2018.7.3', '2018.8.3', '2018.9.2', '2018.10.3', '2018.11.3', '2018.12.2']
       }
     ],
-    yAxis : [
+    yAxis: [
       {
-        type : 'value'
+        type: 'value'
       }
     ],
-    series : [
+    series: [
       {
-        name:'TCP',
-        type:'bar',
-        data:[320, 332, 301, 334, 390, 330, 320]
+        name: 'TCP',
+        type: 'bar',
+        stack: '协议',
+        data: [320, 332, 301, 334, 390, 330, 320, 130, 145, 134, 123, 134]
       },
       {
-        name:'UDP',
-        type:'bar',
-        stack: '流量',
-        data:[120, 132, 101, 134, 90, 230, 210]
+        name: 'UDP',
+        type: 'bar',
+        stack: '协议',
+        data: [120, 132, 101, 134, 90, 230, 210, 345, 133, 643, 123,230]
       },
       {
-        name:'ICMP',
-        type:'bar',
-        stack: '流量',
-        data:[220, 182, 191, 234, 290, 330, 310]
+        name: 'DNS',
+        type: 'bar',
+        stack: '协议',
+        data: [220, 182, 191, 234, 290, 330, 310, 342, 343, 555,232]
       },
-      {
-        name:'POP3',
-        type:'bar',
-        stack: '流量',
-        data:[150, 232, 201, 154, 190, 330, 410]
-      },
-      {
-        name:'IP',
-        type:'bar',
-        data:[862, 1018, 964, 1026, 1679, 1600, 1570],
-      },
-      {
-        name:'LOOP',
-        type:'bar',
-        barWidth : 5,
-        stack: '流量',
-        data:[620, 732, 701, 734, 1090, 1130, 1120]
-      },
-      {
-        name:'BPQ',
-        type:'bar',
-        stack: '流量',
-        data:[120, 132, 101, 134, 290, 230, 220]
-      },
-      {
-        name:'DEC',
-        type:'bar',
-        stack: '流量',
-        data:[60, 72, 71, 74, 190, 130, 110]
-      },
-      {
-        name:'FTP',
-        type:'bar',
-        stack: '流量',
-        data:[62, 82, 91, 84, 109, 110, 120]
-      }
     ]
-  };*/
+  }*/
+  FlowDraw(data){
+    if (data.length!=0){
+      let xFlowData=[];
+      let yProtocalData=[];
+      let pro1=[];
+      let pro2=[];
+      let pro3=[];
+      for (let i=data.length-1;i>-1;i--){
+        yProtocalData=data[0].protocol;
+        var day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
+        xFlowData.push(day);
+        pro1.push(data[i]['size'][0])
+        pro2.push(data[i]['size'][1])
+        pro3.push(data[i]['size'][2])
+      }
+      this.FlowOption = {
+        tooltip : {
+          trigger: 'axis',
+          axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        legend: {
+          data:yProtocalData
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis : [
+          {
+            type : 'category',
+            data:xFlowData,
+           }
+        ],
+        yAxis : [
+          {
+            type : 'value'
+          }
+        ],
+        series : [
+          {
+            name:'TCP',
+            type:'bar',
+            stack: '协议',
+            data:pro1
+           /* data:[320, 332, 301, 334, 390, 330, 320,130,145,134,123,134,145,124,135,142,234,134,555]*/
+          },
+          {
+            name:'UDP',
+            type:'bar',
+            stack: '协议',
+            data:pro2
+            /*data:[120, 132, 101, 134, 90, 230, 210,345,133,643,123,234,123,555,234,245,223,124,432]*/
+          },
+          {
+            name:'DNS',
+            type:'bar',
+            stack: '协议',
+            data:pro3
+          /*  data:[220, 182, 191, 234, 290, 330, 310,342,343,555,334,234,632,332,234,234,555,321,222]*/
+          }
+        ]
+      };
+    }else{
+      this.FlowOption ={}
+    }
+  }
   changeTime() {
     let time = this.timeSet(this.FlowSelect);
     let params={
       time:time.stime
     };
-    console.log(time.stime)
     this.http.get(environment.PUBLIC_URL+'/trojan/view/flow',params).subscribe((req:any[])=>{
+      let data;
       if(req['data']!=null){
-        for (let i=0;i<req['data'].length;i++){
-          this.yProtocalData.push(req['data'][i]['protocal']);
-          var day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
-          this.xFlowData.push(day);
-        }
-        console.log(req['data']);
-        console.log(this.yProtocalData);
-        console.log(this.xFlowData);
+        data=req['data'];
+      }else{
+        data=[]
       }
+      this.FlowDraw(data);
     });
-    this.FlowOption = {
-      /*  title: {
-          text: '流量视图'
-        },*/
-      tooltip : {
-        trigger: 'axis',
-        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-          type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-        }
-      },
-      legend: {
-        data:['TCP','UDP','ICMP','POP3','IP','LOOP','BPQ','DEC','FTP']
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis : [
-        {
-          type : 'category',
-          data : ['周一','周二','周三','周四','周五','周六','周日']
-        }
-      ],
-      yAxis : [
-        {
-          type : 'value'
-        }
-      ],
-      series : [
-        {
-          name:'TCP',
-          type:'bar',
-          data:[320, 332, 301, 334, 390, 330, 320]
-        },
-        {
-          name:'UDP',
-          type:'bar',
-          stack: '流量',
-          data:[120, 132, 101, 134, 90, 230, 210]
-        },
-        {
-          name:'ICMP',
-          type:'bar',
-          stack: '流量',
-          data:[220, 182, 191, 234, 290, 330, 310]
-        },
-        {
-          name:'POP3',
-          type:'bar',
-          stack: '流量',
-          data:[150, 232, 201, 154, 190, 330, 410]
-        },
-        {
-          name:'IP',
-          type:'bar',
-          data:[862, 1018, 964, 1026, 1679, 1600, 1570],
-        },
-        {
-          name:'LOOP',
-          type:'bar',
-          barWidth : 5,
-          stack: '流量',
-          data:[620, 732, 701, 734, 1090, 1130, 1120]
-        },
-        {
-          name:'BPQ',
-          type:'bar',
-          stack: '流量',
-          data:[120, 132, 101, 134, 290, 230, 220]
-        },
-        {
-          name:'DEC',
-          type:'bar',
-          stack: '流量',
-          data:[60, 72, 71, 74, 190, 130, 110]
-        },
-        {
-          name:'FTP',
-          type:'bar',
-          stack: '流量',
-          data:[62, 82, 91, 84, 109, 110, 120]
-        }
-      ]
-    };
   }
 }
