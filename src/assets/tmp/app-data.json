@@ -35,6 +35,23 @@
           ]
         },
         {
+          "text": "域名检测",
+          "i18n": "menu.domain_name.detection",
+          "icon": "anticon-rocket",
+          "children": [
+            {
+              "text": "检测历史",
+              "link": "/dns/history",
+              "i18n": "menu.detection.history"
+            },
+            {
+              "text": "DNS检测",
+              "link": "/dns/detection",
+              "i18n": "menu.dns.detection"
+            }
+          ]
+        },
+        {
           "text": "Account",
           "i18n": "menu.account.settings",
           "icon": "anticon-user",

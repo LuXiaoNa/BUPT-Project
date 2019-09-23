@@ -249,4 +249,72 @@ export class DashboardFirstComponent implements OnInit {
   }
   currentPageDataChange($event): void {
   }
+  Option1 = {
+/*    title : {
+      text: '用户访问来源',
+      x:'center'
+    },*/
+    tooltip : {
+      trigger: 'item',
+      formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      data: ['忽略','可疑','危险','十分危险']
+    },
+    series : [
+      {
+        name: '访问来源',
+        type: 'pie',
+        radius : '55%',
+        center: ['50%', '60%'],
+        data:[
+          {value:335, name:'忽略'},
+          {value:310, name:'可疑'},
+          {value:234, name:'危险'},
+          {value:135, name:'十分危险'},
+        ],
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  };
+  Option2 = {
+    title: {
+      text: '访问次数',
+    },
+    xAxis: {
+      type: 'category',
+      data: ['192.168.1.1', '1.1.1.1', '2.2.2.2', '3.3.3.2', '4.4.4.4', '5.5.5.5', '6.6.6.6']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [{
+      data: [120, 200, 150, 80, 70, 110, 130],
+      type: 'bar'
+    }]
+  };
+  Option3 = {
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [{
+      data: [820, 932, 901, 934, 1290, 1330, 1320],
+      type: 'line'
+    }]
+  };
+
+
+
 }

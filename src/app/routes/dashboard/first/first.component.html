@@ -48,6 +48,26 @@
     </nz-card>
   </div>
 </div>
+
+
+<div nz-row nzGutter="16">
+  <div nz-col nzSpan="12">
+    <nz-card [nzTitle]="'域名危险等级'" >
+      <div echarts [options]="Option1" class="demo-chart" style="height: 250px;"></div>
+    </nz-card>
+  </div>
+  <div nz-col nzSpan="12">
+    <nz-card  [nzTitle]="'ip访问统计'">
+      <div echarts [options]="Option2" class="demo-chart" style="height: 250px;"></div>
+      <nz-select [(ngModel)]="AaptureMessageSelect" nzSize="small" (ngModelChange)="AaptureMessageSet()"
+                 class="AaptureMessageSelect">
+        <nz-option *ngFor="let option of AaptureMessageOptions" [nzLabel]="option.name" [nzValue]="option.id">
+        </nz-option>
+      </nz-select>
+    </nz-card>
+  </div>
+</div>
+
 <div nz-row nzGutter="0">
     <nz-card  [nzTitle]="'威胁活动'" >
       <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger  [nzShowQuickJumper]="true"

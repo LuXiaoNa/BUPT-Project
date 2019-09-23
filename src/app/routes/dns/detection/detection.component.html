@@ -1,0 +1,29 @@
+<div class="alain-default__content-title">
+  <h1>
+   DNS检测
+  </h1>
+</div>
+
+<nz-card [nzHoverable]="true">
+<!--  <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true" [nzTotal]="total"
+            nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
+            (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">-->
+  <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true">
+    <thead>
+    <tr>
+      <th>检测时间</th>
+      <th>检测数量</th>
+      <th>DNS名称</th>
+      <th>DNSIP</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of filterTable.data">
+      <td>{{ data.detectime | date:"yyyy-MM-dd HH:mm:ss"}}</td>
+      <td>{{ data.detecnums }}</td>
+      <td>{{ data.Domainname}}</td>
+      <td>{{ data.Domainip }}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-card>

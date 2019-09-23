@@ -39,6 +39,7 @@ const routes: Routes = [
       { path: 'style', loadChildren: () => import('./style/style.module').then(m => m.StyleModule) },
       { path: 'delon', loadChildren: () => import('./delon/delon.module').then(m => m.DelonModule) },
       { path: 'horse', loadChildren: () => import('./horse/horse.module').then(m => m.HorseModule) },
+      {path:'dns', loadChildren: () => import('./dns/dns.module').then(m=>m.DnsModule)},
       { path: 'extras', loadChildren: () => import('./extras/extras.module').then(m => m.ExtrasModule) },
       { path: 'pro', loadChildren: () => import('./pro/pro.module').then(m => m.ProModule) },
       // Exception
