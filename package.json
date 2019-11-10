@@ -61,6 +61,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "ajv": "^6.10.0",
+    "angular-baidu-maps": "^3.0.0",
     "echarts": "^4.2.1",
     "file-saver": "^2.0.1",
     "moment": "^2.24.0",

@@ -23,14 +23,14 @@
           "icon": "anticon-bulb",
           "children": [
             {
-              "text": "木马活动",
-              "link": "/horse/activite",
-              "i18n": "menu.trojan.horse.activities"
-            },
-            {
               "text": "木马流量视图",
               "link": "/horse/flowView",
               "i18n": "menu.trojan.horse.flow_view"
+            },
+            {
+              "text": "木马活动",
+              "link": "/horse/activite",
+              "i18n": "menu.trojan.horse.activities"
             }
           ]
         },
@@ -43,11 +43,6 @@
               "text": "检测历史",
               "link": "/dns/history",
               "i18n": "menu.detection.history"
-            },
-            {
-              "text": "DNS检测",
-              "link": "/dns/detection",
-              "i18n": "menu.dns.detection"
             }
           ]
         },

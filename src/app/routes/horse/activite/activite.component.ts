@@ -123,6 +123,7 @@ export class HorseActiviteComponent implements OnInit {
    };
    this.http.get(environment.PUBLIC_URL+'/trojan',params).subscribe((req:any[])=>{
      if(req['data']!=null){
+       console.log(req['data'])
        this.listOfDisplayData=req['data'][0]['content'];
        this.total=req['data'][0]['totalElements'];
      }else{
@@ -143,7 +144,7 @@ export class HorseActiviteComponent implements OnInit {
   refreshStatus(){
     this.search();
   }
-  currentPageDataChange(){
+  currentPageDataChange($event){
 
   }
 }

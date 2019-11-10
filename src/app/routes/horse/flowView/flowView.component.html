@@ -1,42 +1,37 @@
-<div class="alain-default__content-title">
+<!--<div class="alain-default__content-title">
   <h1>
     木马流量视图
   </h1>
-</div>
-<div  nz-row nzGutter="0">
-  <nz-card nzTitle="流量视图"  [nzHoverable]="true">
+</div>-->
+<div  nz-row nzGutter="16" style="background: #292929;margin-top: 1px;">
+  <h3 style="color:#d6e4ff">流量视图</h3>
     <div echarts [options]="FlowOption" class="demo-chart" style="width: 100%"></div>
     <nz-select [(ngModel)]="FlowSelect" nzSize="small" (ngModelChange)="changeTime()" class="FlowSelect">
       <nz-option *ngFor="let option of FlowOptionsDate" [nzLabel]="option.name" [nzValue]="option.id">
       </nz-option>
     </nz-select>
-  </nz-card>
 </div>
-  <div  nz-row nzGutter="0">
-    <nz-card nzTitle="木马传染源分布">
-      <nz-table #nestedTable [nzData]="listOfParentData" [nzPageSize]="10">
-        <tbody>
-        <ng-template ngFor let-data [ngForOf]="nestedTable.data">
-          <tr>
-            <td nzShowExpand [(nzExpand)]="data.expand"></td>
-            <td>传染源IP:{{ data.name }}</td>
-          </tr>
-          <tr [nzExpand]="data.expand">
-            <td></td>
-            <td colspan="7">
-              <nz-table #innerTable [nzData]="listOfChildrenData" nzSize="middle" [nzShowPagination]="false">
-        <tbody>
-        <tr *ngFor="let data of innerTable.data">
-          <td>被传染源IP:{{ data.date }}</td>
-        </tr>
-        </tbody>
-      </nz-table>
-      </td>
-      </tr>
-      </ng-template>
-      </tbody>
-      </nz-table>
-    </nz-card>
+<div nz-row nzGutter="16" style="background: #292929;margin-top: 1px;">
+  <div nz-col nzSpan="12">
+    <h3 style="color:#d6e4ff">恶意源端口</h3>
+    <div echarts [options]="SrcPortOption" class="demo-chart" style="width: 95%"></div>
+    <nz-select [(ngModel)]="SrcPortTopSelect" nzSize="small" (ngModelChange)="SrcPortTopSelectSet()"
+               class="TopSelect">
+      <nz-option *ngFor="let option of SrcPortTopOptions" [nzLabel]="option.name" [nzValue]="option.id">
+      </nz-option>
+    </nz-select>
   </div>
+
+  <div nz-col nzSpan="12">
+    <h3 style="color:#d6e4ff">恶意目的端口</h3>
+    <div echarts [options]="DesPortOption" class="demo-chart" style="width: 95%"></div>
+    <nz-select [(ngModel)]="DesPortTopSelect" nzSize="small" (ngModelChange)="DesPortTopSelectSet()"
+               class="TopSelect">
+      <nz-option *ngFor="let option of DesPortTopOptions" [nzLabel]="option.name" [nzValue]="option.id">
+      </nz-option>
+    </nz-select>
+  </div>
+
+</div>
 
 

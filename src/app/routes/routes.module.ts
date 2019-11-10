@@ -15,6 +15,7 @@ import { UserRegisterResultComponent } from './passport/register-result/register
 import { UserLockComponent } from './passport/lock/lock.component';
 import { CallbackComponent } from './callback/callback.component';
 import {NgxEchartsModule} from 'ngx-echarts';
+import {AbmModule} from "angular-baidu-maps";
 
 const COMPONENTS = [
   DashboardFirstComponent,
@@ -32,7 +33,10 @@ const COMPONENTS = [
 const COMPONENTS_NOROUNT = [];
 
 @NgModule({
-  imports: [SharedModule, RouteRoutingModule,NgxEchartsModule],
+  imports: [SharedModule, RouteRoutingModule,NgxEchartsModule,
+    AbmModule.forRoot({
+      apiKey: '' // app key为必选项
+    })],
   declarations: [...COMPONENTS, ...COMPONENTS_NOROUNT],
   entryComponents: COMPONENTS_NOROUNT,
 })

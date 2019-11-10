@@ -1,101 +1,79 @@
-<div class="alain-default__content-title">
+<!--<div class="alain-default__content-title">
   <h1>
     首页
     <small>Welcome !</small>
   </h1>
-</div>
-<div nz-row nzGutter="16">
+</div>-->
+<div nz-row nzGutter="16" style="background: #292929;margin-top: 1px;padding:30px;">
   <div nz-col nzSpan="8">
-    <nz-card [nzTitle]="'告警'" >
-      <div style="height: 210px">
-        <g2-card [footer]="footer1">
-          <trend flag="up" style="display:block; margin-top:2px;">
-            待处理
-            <span class="pl-sm">   {{notHandleNum}}</span>
-          </trend>
-          <trend flag="down">
-            已处理
-            <span class="pl-sm">    {{handledNum}}</span>
-          </trend>
-          <ng-template #footer1>
-            <p class="text-truncate mb0">
-              全部告警
-              <span class="ml-sm">   {{threatNum}}</span>
-            </p>
-          </ng-template>
-        </g2-card>
+      <div style="height: 210px;background-color: #292929;font-size: large;color:#d6e4ff">
+       <h4 style="color:#d6e4ff">告警</h4>
+        <pre>    待处理   {{notHandleNum}}</pre>
+        <pre>    已处理   {{handledNum}}</pre>
+        <nz-divider ></nz-divider>
+        <pre>    全部警告    {{threatNum}}</pre>
       </div>
-    </nz-card>
   </div>
   <div nz-col nzSpan="8">
-      <nz-card  [nzTitle]="'捕获报文'">
+       <h3 style="color:#d6e4ff">捕获报文</h3>
         <div echarts [options]="AaptureOption" class="demo-chart" style="height: 210px;"></div>
          <nz-select [(ngModel)]="AaptureMessageSelect" nzSize="small" (ngModelChange)="AaptureMessageSet()"
                   class="AaptureMessageSelect">
            <nz-option *ngFor="let option of AaptureMessageOptions" [nzLabel]="option.name" [nzValue]="option.id">
          </nz-option>
        </nz-select>
-      </nz-card>
   </div>
   <div nz-col nzSpan="8">
-    <nz-card  [nzTitle]="'检测流量'" [nzHoverable]="true">
+    <h3 style="color:#d6e4ff">检测流量</h3>
       <div echarts [options]="FlowOption" class="demo-chart" style="height: 210px;"></div>
        <nz-select [(ngModel)]="DetectFlowSelect" nzSize="small" (ngModelChange)="DetectFlowSet()"
                   class="DetectFlowSelect">
            <nz-option *ngFor="let option of DetectFlowOptions" [nzLabel]="option.name" [nzValue]="option.id">
            </nz-option>
        </nz-select>
-    </nz-card>
   </div>
 </div>
 
 
-<div nz-row nzGutter="16">
-  <div nz-col nzSpan="12">
-    <nz-card [nzTitle]="'域名危险等级'" >
-      <div echarts [options]="Option1" class="demo-chart" style="height: 250px;"></div>
-    </nz-card>
+<!--地图-->
+<div nz-row nzGutter="16" style="background: #292929;padding:30px;">
+<!--  <h3 style="color:#d6e4ff">地图</h3>-->
+  <div  echarts [options]="Option"  class="demo-chart" style="width: 100%;">
   </div>
-  <div nz-col nzSpan="12">
-    <nz-card  [nzTitle]="'ip访问统计'">
-      <div echarts [options]="Option2" class="demo-chart" style="height: 250px;"></div>
-      <nz-select [(ngModel)]="AaptureMessageSelect" nzSize="small" (ngModelChange)="AaptureMessageSet()"
-                 class="AaptureMessageSelect">
-        <nz-option *ngFor="let option of AaptureMessageOptions" [nzLabel]="option.name" [nzValue]="option.id">
-        </nz-option>
-      </nz-select>
-    </nz-card>
-  </div>
+  <!--<abm-map #map [options]="options" (ready)="onReady($event)"></abm-map>-->
 </div>
 
-<div nz-row nzGutter="0">
-    <nz-card  [nzTitle]="'威胁活动'" >
-      <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger  [nzShowQuickJumper]="true"
-                [nzTotal]="total" nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
-                (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
-       <thead>
-       <tr>
-         <th>时间</th>
-         <th>源IP</th>
-         <th>目的IP</th>
-         <th>请求类型</th>
-         <th>威胁信息</th>
-       </tr>
-       </thead>
-        <tbody>
-        <tr *ngFor="let data of filterTable.data">
-          <td>{{ data.time | date:"yyyy-MM-dd HH:mm:ss" }}</td>
-          <td>{{ data.srcIP }}</td>
-          <td>{{ data.desIP }}</td>
-          <td>{{ data.type }}</td>
-          <td>{{ data.info }}</td>
-        </tr>
-        </tbody>
-      </nz-table>
-      <nz-select [(ngModel)]="threatenSelect" nzSize="small" (ngModelChange)="getFlowdata()"
-                 class="threatenSelect">
-        <nz-option *ngFor="let option of threatenOptions" [nzLabel]="option.name" [nzValue]="option.id">
+
+
+
+
+<div nz-row nzGutter="16"  style="background: #292929;padding:30px;">
+  <div nz-col nzSpan="12">
+    <h3 style="color:#d6e4ff">域名危险等级</h3>
+      <div echarts [options]="DnsOption" class="demo-chart" style="width: 100%"></div>
+  </div>
+  <div nz-col nzSpan="12">
+    <h3 style="color:#d6e4ff">威胁等级柱状图</h3>
+    <div echarts [options]="ThrenOption" class="demo-chart" style="width: 100%"></div>
+  </div>
+</div>
+<div nz-row nzGutter="16" style="background: #292929;padding:30px;">
+  <nz-tabset [(nzSelectedIndex)]="tabIndex" (nzSelectChange)="test1()" style="color: #d6e4ff" >
+    <nz-tab nzTitle="木马IP统计"  style="color: #d6e4ff">
+      <div echarts [options]="IPOption" class="demo-chart" style="height: 250px;"></div>
+      <nz-select [(ngModel)]="TopSelect" nzSize="small" (ngModelChange)="TopSelectSet()"
+                 class="TopSelect">
+        <nz-option *ngFor="let option of TopOptions" [nzLabel]="option.name" [nzValue]="option.id">
         </nz-option>
       </nz-select>
-    </nz-card>
+    </nz-tab>
+    <nz-tab nzTitle="DNSIP统计" style="color: #d6e4ff">
+      <div echarts [options]="DnsIPOption" class="demo-chart" style="height: 250px;"></div>
+      <nz-select [(ngModel)]="DnsTopSelect" nzSize="small" (ngModelChange)="DnsTopSelectSet()"
+                 class="TopSelect">
+        <nz-option *ngFor="let option of DnsTopOptions" [nzLabel]="option.name" [nzValue]="option.id">
+        </nz-option>
+      </nz-select>
+    </nz-tab>
+  </nz-tabset>
 </div>

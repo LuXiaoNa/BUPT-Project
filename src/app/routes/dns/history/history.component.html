@@ -5,25 +5,47 @@
 </div>
 
 <nz-card [nzHoverable]="true">
- <!-- <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true" [nzTotal]="total"
-            nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
-            (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">-->
-  <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true">
+  <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzTotal]="total" nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true"
+             (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
     <thead>
     <tr>
+     <!-- <th>检测ID</th>-->
       <th>检测时间</th>
-      <th>检测数量</th>
-      <th>DNS名称</th>
-      <th>DNSIP</th>
+    <!--  <th>用户ID</th>-->
+      <th>查看详情</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let data of filterTable.data">
-      <td>{{ data.detectime | date:"yyyy-MM-dd HH:mm:ss"}}</td>
-      <td>{{ data.detecnums }}</td>
-      <td>{{ data.Domainname}}</td>
-      <td>{{ data.Domainip }}</td>
+   <!--   <td>{{ data.hId }}</td>-->
+      <td>{{ data.detectTime | date:"yyyy-MM-dd HH:mm:ss"}}</td>
+     <!-- <td>{{ data.userId}}</td>-->
+      <td>
+        <a (click)="showDetail(data)">详情</a>
+      </td>
     </tr>
     </tbody>
   </nz-table>
 </nz-card>
+<nz-modal [(nzVisible)]="isVisible" nzWidth="900" nzTitle="DNS检测详情" [nzFooter]="null"  [nzContent]="modalContentdeteil" (nzOnCancel)="detailConceal()">
+  <ng-template #modalContentdeteil>
+    <nz-table #Table [nzData]="dataSetdynamic" nzBordered  nzSize="default" [(nzPageIndex)]="pageIndexDetail" [(nzPageSize)]="pageSizeDetail" [nzTotal]="totalDetail"  (nzPageIndexChange)="refreshStatusDetail()" (nzPageSizeChange)="refreshStatusDetail()" (nzCurrentPageDataChange)="currentPageDataChangeDetail($event)"
+              [nzShowSizeChanger]="true" [nzShowQuickJumper]="true">
+      <thead>
+      <tr>
+        <th>域名</th>
+        <th>ip</th>
+
+      <!--  <th>总数</th>-->
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let itemdetail of Table.data">
+        <td style="width:200px;">{{itemdetail.domain}}</td>
+        <td style="width: 290px">{{itemdetail.ip}}</td>
+       <!-- <td style="width:200px;">{{itemdetail.countnumber}}</td>-->
+      </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+</nz-modal>
