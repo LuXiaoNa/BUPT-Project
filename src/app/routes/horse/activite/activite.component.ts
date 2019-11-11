@@ -24,6 +24,15 @@ export class HorseActiviteComponent implements OnInit {
   pageIndex: number;
   // 一页显示的条数
   pageSize: number;
+  toTime:string;
+  fromTime:string;
+  SrcPort:number;
+  DesPort:number;
+  ThreatLevel:number;
+  SrcIp:string;
+  DstIp:string;
+  Protocol:string;
+  Type:string;
   constructor(
     private http: _HttpClient,
     private fb: FormBuilder,
@@ -47,23 +56,16 @@ export class HorseActiviteComponent implements OnInit {
   }
 
   //查询数据
+
   open(){
-    this.visible = true;
-    this.pageIndex=1;
-    this.pageSize=10;
+      this.visible = true;
+      this.pageIndex=1;
+      this.pageSize=10;
   }
   close(){
     this.visible = false;
+
   }
-  toTime:string;
-  fromTime:string;
-  SrcPort:number;
-  DesPort:number;
-  ThreatLevel:number;
-  SrcIp:string;
-  DstIp:string;
-  Protocol:string;
-  Type:string;
   search(){
     if(this.validateForm.value.srcIP!=null&&this.validateForm.value.srcIP!=""){
       this.SrcIp=this.validateForm.value.srcIP;

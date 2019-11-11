@@ -112,7 +112,7 @@ export class HorseFlowViewComponent implements OnInit {
         legend: {
           data:yProtocalData,
           textStyle: {
-            color: 'rgba(55,255,249,1)',
+            color: '#FF3030',
           }
         },
         grid: {
@@ -130,11 +130,11 @@ export class HorseFlowViewComponent implements OnInit {
             },
             axisLine: {
               lineStyle: {
-                color: 'rgba(55,255,249,1)',
+                color: '#FF3030',
               }
             },
             axisLabel: {
-              color: 'rgba(55,255,249,1)'
+              color: '#FF3030'
             }
            }
 
@@ -147,7 +147,7 @@ export class HorseFlowViewComponent implements OnInit {
             },
             axisLine: {
               lineStyle: {
-                color: 'rgba(55,255,249,1)',
+                color: '#FF3030',
               }
             },
           }
@@ -158,21 +158,18 @@ export class HorseFlowViewComponent implements OnInit {
             type:'bar',
             stack: '协议',
             data:pro1
-           /* data:[320, 332, 301, 334, 390, 330, 320,130,145,134,123,134,145,124,135,142,234,134,555]*/
           },
           {
             name:'UDP',
             type:'bar',
             stack: '协议',
             data:pro2
-            /*data:[120, 132, 101, 134, 90, 230, 210,345,133,643,123,234,123,555,234,245,223,124,432]*/
           },
           {
             name:'DNS',
             type:'bar',
             stack: '协议',
             data:pro3
-          /*  data:[220, 182, 191, 234, 290, 330, 310,342,343,555,334,234,632,332,234,234,555,321,222]*/
           }
         ]
       };
@@ -231,11 +228,11 @@ export class HorseFlowViewComponent implements OnInit {
             },
             axisLine: {
               lineStyle: {
-                color: '#FFEC8B',
+                color: '#528B8B',
               }
             },
             axisLabel: {
-              color: '#FFEC8B'
+              color: '#528B8B'
             }
 
           },
@@ -247,7 +244,7 @@ export class HorseFlowViewComponent implements OnInit {
             },
             axisLine: {
               lineStyle: {
-                color: '#FFEC8B',
+                color: '#528B8B',
               }
             },
           },
@@ -257,7 +254,7 @@ export class HorseFlowViewComponent implements OnInit {
               type: 'bar',
               data: ySrcDataNumber,
               stack: '访问次数',
-              color:'#FFEC8B'
+              color:'#528B8B'
             },
           ]
         };
@@ -300,11 +297,11 @@ export class HorseFlowViewComponent implements OnInit {
             },
             axisLine: {
               lineStyle: {
-                color: '#FFE7BA',
+                color: '#7D9EC0',
               }
             },
             axisLabel: {
-              color: '#FFE7BA'
+              color: '#7D9EC0'
             }
 
           },
@@ -316,7 +313,7 @@ export class HorseFlowViewComponent implements OnInit {
             },
             axisLine: {
               lineStyle: {
-                color: '#FFE7BA',
+                color: '#7D9EC0',
               }
             },
           },
@@ -326,7 +323,7 @@ export class HorseFlowViewComponent implements OnInit {
               type: 'bar',
               data: yDesDataNumber,
               stack: '访问次数',
-              color:'#FFE7BA'
+              color:'#7D9EC0'
             },
           ]
         };

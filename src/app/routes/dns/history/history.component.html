@@ -4,22 +4,60 @@
   </h1>
 </div>
 
-<nz-card [nzHoverable]="true">
+
+<nz-card [nzTitle]="'DNS检测'">
+    <div echarts [options]="Option"  class="demo-chart" style="width: 100%;"></div>
+  <nz-select [(ngModel)]="TopSelect" nzSize="small" (ngModelChange)="TopSelectSet()"
+             class="TimeSelect">
+    <nz-option *ngFor="let option of TimeOptions" [nzLabel]="option.name" [nzValue]="option.id">
+    </nz-option>
+  </nz-select>
+</nz-card>
+
+<nz-card>
   <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzTotal]="total" nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true"
              (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
     <thead>
     <tr>
-     <!-- <th>检测ID</th>-->
+      <th>自制网络数</th>
+      <th>国家数</th>
+      <th>A记录数</th>
+      <th>源IP</th>
+      <th>目的IP</th>
+      <th>IP所在城市</th>
+      <th>域名</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of filterTable.data">
+      <!--<td>{{ data.detectTime | date:"yyyy-MM-dd HH:mm:ss"}}</td>-->
+      <td>{{data.asnNumber}}</td>
+      <td>{{data.countryNumber}}</td>
+      <td>{{data.aRecordNumber}}</td>
+      <td>{{data.srcIplist}}</td>
+      <td>{{data.desIplist}}</td>
+      <td>{{data.citylist}}</td>
+      <td>{{data.domain}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+
+
+
+<!--
+<nz-card>
+  <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzTotal]="total" nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true"
+             (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
+    <thead>
+    <tr>
       <th>检测时间</th>
-    <!--  <th>用户ID</th>-->
       <th>查看详情</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let data of filterTable.data">
-   <!--   <td>{{ data.hId }}</td>-->
       <td>{{ data.detectTime | date:"yyyy-MM-dd HH:mm:ss"}}</td>
-     <!-- <td>{{ data.userId}}</td>-->
       <td>
         <a (click)="showDetail(data)">详情</a>
       </td>
@@ -35,17 +73,17 @@
       <tr>
         <th>域名</th>
         <th>ip</th>
-
-      <!--  <th>总数</th>-->
+      &lt;!&ndash;  <th>总数</th>&ndash;&gt;
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let itemdetail of Table.data">
         <td style="width:200px;">{{itemdetail.domain}}</td>
         <td style="width: 290px">{{itemdetail.ip}}</td>
-       <!-- <td style="width:200px;">{{itemdetail.countnumber}}</td>-->
+       &lt;!&ndash; <td style="width:200px;">{{itemdetail.countnumber}}</td>&ndash;&gt;
       </tr>
       </tbody>
     </nz-table>
   </ng-template>
 </nz-modal>
+-->

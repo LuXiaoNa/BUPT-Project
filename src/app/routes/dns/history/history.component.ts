@@ -4,6 +4,7 @@ import {
   FormBuilder,
 } from '@angular/forms';
 import {environment} from "@env/environment";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-dns-history',
@@ -29,7 +30,27 @@ export class DnsHistoryComponent implements OnInit {
   pageIndexDetail: number;
   // 一页显示的条数
   pageSizeDetail: number;
-
+ /* Option:any;*/
+  Option={
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [{
+      data: [820, 932, 901, 934, 1290, 1330, 1320],
+      type: 'line',
+      smooth: true
+    }]
+  };
+  TimeOptions = [
+    { id: 1, name: '5分钟' },
+    { id: 2, name: '1小时' },
+    { id: 3, name: '24小时' },
+  ];
+  TopSelect:any;
   constructor(
     private http: _HttpClient,
     private fb: FormBuilder,
@@ -42,14 +63,49 @@ export class DnsHistoryComponent implements OnInit {
     this.pageSizeDetail=10;
     this.pageIndexDetail=1;
     this.getData();
+    this.TopSelect=3;
   }
+//获取曲线图
+  TopSelectSet(){
+    let stime;
+    switch (this.TopSelect) {
+      case 1:
+        stime=300000;
+       /* stime = moment().subtract(5, 'minutes');*/
+        break;
+      case 2:
+        stime=3600000;
+       /* stime = moment().subtract(1, 'hours');*/
+        break;
+      case 3:
+        stime=86400000;
+        /*stime = moment().subtract(1, 'days');*/
+        break;
+    }
+    const params={
+      time:stime,
+    };
+    /*this.Option={
+
+    }*/
+  /*  this.http.get(environment.PUBLIC_URL+'/info/packageNum',params).subscribe((req:any[])=>{
+      let data;
+      if(req['data']!=null){
+        data = req['data'];
+      }else{
+        data = [];
+      }
+    });*/
+  }
+
+//检测结果
   getData(){
     const params={
       page:(this.pageIndex-1),
       size:this.pageSize,
       userId:1
     };
-    this.http.get(environment.PUBLIC_URL+'/history',params).subscribe((req:any[])=>{
+    this.http.get(environment.PUBLIC_URL+'/detail',params).subscribe((req:any[])=>{
       if(req['data']!=null){
         this.listOfDisplayData=req['data'][0]['content'];
         console.log(req['data']);
@@ -63,13 +119,16 @@ export class DnsHistoryComponent implements OnInit {
   refreshStatus(){
   }
   currentPageDataChange($event){
-
   }
+
+
+
+
+  /*
  showDetail(data){
-   console.log(data.hId);
    this.isVisible=true;
    const params={
-       hId:data.hId,
+      hId:data.hId,
       page:(this.pageIndexDetail-1),
       size:this.pageSizeDetail,
    };
@@ -92,7 +151,7 @@ export class DnsHistoryComponent implements OnInit {
   }
   currentPageDataChangeDetail($event){
 
-  }
+  }*/
 
 
 
