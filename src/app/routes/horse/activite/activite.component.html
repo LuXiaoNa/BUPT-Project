@@ -5,7 +5,7 @@
 </div>-->
 
 <!--<nz-card [nzHoverable]="true">-->
-<div nz-row nzGutter="16" style="background: #292929;margin-top: 1px;">
+<div nz-row nzGutter="16" style="margin-top: 1px;">
   <button nz-button nzType="primary" (click)="open()" style="margin-bottom: 10px"><i nz-icon type="search"></i>{{ 'button.search' | translate }}</button>
   <button nz-button  (click)="reset()" style="margin-bottom: 10px"><i nz-icon type="reset"></i>重置数据</button>
   <nz-drawer
@@ -111,7 +111,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let data of filterTable.data">
+    <tr *ngFor="let data of filterTable.data" class="tableTr">
       <td>{{ data.srcIP }}</td>
       <td>{{ data.desIP }}</td>
       <td>{{ data.srcPort}}</td>

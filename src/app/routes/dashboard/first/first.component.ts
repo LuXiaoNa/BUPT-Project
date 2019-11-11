@@ -432,15 +432,15 @@ export class DashboardFirstComponent implements OnInit {
       tooltip : {
         trigger: 'item',
         formatter: function (val) {
-          return `项目进度：<br>${val.data.name}：${val.data.value}%<br>告警：${val.data.warn}<br>问题：${val.data.problem}`;
+          return `攻击情况：<br>${val.data.name}：${val.data.value}%<br>攻击IP：${val.data.warn}<br>攻击次数：${val.data.problem}`;
         }
       },
       visualMap: {
-        min: 0,
+      /*  min: 0,
         max: 100,
         left: 'left',
         top: 'bottom',
-        text:['高','低'],           // 文本，默认为数值文本
+        text:['高','低'],  */         // 文本，默认为数值文本
         calculable : true,
         inRange: {
           color: ['#feffc7', '#02cb00']
@@ -462,7 +462,7 @@ export class DashboardFirstComponent implements OnInit {
           },
           itemStyle: {
             color: 'red',
-            areaColor: '#fff',
+            areaColor: '#5CACEE',
           },
           emphasis: {
             itemStyle: {

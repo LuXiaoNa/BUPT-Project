@@ -8,8 +8,8 @@
   <div nz-col nzSpan="8">
       <div style="height: 210px;background-color: #292929;font-size: large;color:#d6e4ff">
        <h4 style="color:#d6e4ff">告警</h4>
-        <pre>    待处理   {{notHandleNum}}</pre>
-        <pre>    已处理   {{handledNum}}</pre>
+        <pre>    待处理      {{notHandleNum}}</pre>
+        <pre>    已处理      {{handledNum}}</pre>
         <nz-divider ></nz-divider>
         <pre>    全部警告    {{threatNum}}</pre>
       </div>
@@ -36,12 +36,10 @@
 
 
 <!--地图-->
-<div nz-row nzGutter="16" style="background: #292929;padding:30px;">
-<!--  <h3 style="color:#d6e4ff">地图</h3>-->
+<!--<div nz-row nzGutter="16" style="background: #292929;padding:30px;">
   <div  echarts [options]="Option"  class="demo-chart" style="width: 100%;">
   </div>
-  <!--<abm-map #map [options]="options" (ready)="onReady($event)"></abm-map>-->
-</div>
+</div>-->
 
 
 
