@@ -8,72 +8,70 @@
   <div nz-col nzSpan="8">
     <nz-card nzTitle="告警">
       <g2-card [title]="'已处理'" [bordered]="true" total="{{handledNum}}" footer="全部警告 {{threatNum}}" contentHeight="60">
-        待处理<trend flag="down" style="margin: 35px 0 0 8px; color: rgba(0,0,0,.85)">{{notHandleNum}}</trend>
+        待处理<trend flag="down" style="margin: 25px 0 0 8px; color: rgba(0,0,0,.85)">{{notHandleNum}}</trend>
       </g2-card>
     </nz-card>
   </div>
     <div nz-col nzSpan="8">
      <nz-card nzTitle="捕获报文">
-       <div echarts [options]="AaptureOption" class="demo-chart" style="height: 210px;"></div>
-       <nz-select [(ngModel)]="AaptureMessageSelect" nzSize="small" (ngModelChange)="AaptureMessageSet()"
-                  class="AaptureMessageSelect">
-         <nz-option *ngFor="let option of AaptureMessageOptions" [nzLabel]="option.name" [nzValue]="option.id">
-         </nz-option>
-       </nz-select>
+       <div echarts [options]="AaptureOption" class="demo-chart" style="height: 200px;"></div>
      </nz-card>
    </div>
     <div nz-col nzSpan="8">
       <nz-card nzTitle="检测流量">
-      <div echarts [options]="FlowOption" class="demo-chart" style="height: 210px;"></div>
-      <nz-select [(ngModel)]="DetectFlowSelect" nzSize="small" (ngModelChange)="DetectFlowSet()"
-                 class="DetectFlowSelect">
-        <nz-option *ngFor="let option of DetectFlowOptions" [nzLabel]="option.name" [nzValue]="option.id">
-        </nz-option>
-      </nz-select>
+      <div echarts [options]="FlowOption" class="demo-chart" style="height: 200px;"></div>
       </nz-card>
     </div>
 </div>
 
 <!--地图-->
-<div nz-row nzGutter="0" >
+<!--<div nz-row nzGutter="16" >-->
+ <!-- <div nz-col nzSpan="12">-->
     <nz-card>
-      <div  echarts [options]="Option"  class="demo-chart" style="width: 100%;">
+      <div style="float:left;width: 53%;height: 363px;">
+        <div  echarts [options]="Option"  class="demo-chart" style="width: 100%;">
+        </div>
       </div>
-    </nz-card>
-</div>
 
+      <div style="float:right;width: 47%">
+        <nz-tabset [(nzSelectedIndex)]="tabIndex" (nzSelectChange)="test1()" >
+          <nz-tab nzTitle="木马IP统计" >
+            <div echarts [options]="IPOption" class="demo-chart" style="width: 100%;"></div>
+          </nz-tab>
+          <nz-tab nzTitle="DNSIP统计">
+            <div echarts [options]="DnsIPOption" class="demo-chart" style="width: 100%;"></div>
+          </nz-tab>
+        </nz-tabset>
+      </div>
+
+    </nz-card>
+ <!-- </div>-->
+ <!-- <div nz-col nzSpan="12">
+    <nz-card>
+      <nz-tabset [(nzSelectedIndex)]="tabIndex" (nzSelectChange)="test1()">
+        <nz-tab nzTitle="木马IP统计" >
+          <div echarts [options]="IPOption" class="demo-chart" style="width: 100%;height: 300px"></div>
+        </nz-tab>
+        <nz-tab nzTitle="DNSIP统计">
+          <div echarts [options]="DnsIPOption" class="demo-chart" style="width: 100%;height: 300px"></div>
+        </nz-tab>
+      </nz-tabset>
+    </nz-card>
+  </div>-->
+<!--</div>-->
 
 <div nz-row nzGutter="16" >
     <div nz-col nzSpan="12">
       <nz-card nzTitle="域名危险等级">
-      <div echarts [options]="DnsOption" class="demo-chart" style="width: 100%"></div>
+      <div echarts [options]="DnsOption" class="demo-chart" style="width: 100%;height: 260px"></div>
       </nz-card>
     </div>
 
     <div nz-col nzSpan="12">
       <nz-card nzTitle="威胁等级柱状图">
-      <div echarts [options]="ThrenOption" class="demo-chart" style="width: 100%"></div>
+      <div echarts [options]="ThrenOption" class="demo-chart" style="width: 100%;height: 260px"></div>
       </nz-card>
     </div>
 </div>
-  <nz-card>
-    <nz-tabset [(nzSelectedIndex)]="tabIndex" (nzSelectChange)="test1()"  >
-      <nz-tab nzTitle="木马IP统计" >
-        <div echarts [options]="IPOption" class="demo-chart" style="height: 250px;"></div>
-        <nz-select [(ngModel)]="TopSelect" nzSize="small" (ngModelChange)="TopSelectSet()"
-                   class="TopSelect">
-          <nz-option *ngFor="let option of TopOptions" [nzLabel]="option.name" [nzValue]="option.id">
-          </nz-option>
-        </nz-select>
-      </nz-tab>
-      <nz-tab nzTitle="DNSIP统计">
-        <div echarts [options]="DnsIPOption" class="demo-chart" style="height: 250px;"></div>
-        <nz-select [(ngModel)]="DnsTopSelect" nzSize="small" (ngModelChange)="DnsTopSelectSet()"
-                   class="TopSelect">
-          <nz-option *ngFor="let option of DnsTopOptions" [nzLabel]="option.name" [nzValue]="option.id">
-          </nz-option>
-        </nz-select>
-      </nz-tab>
-    </nz-tabset>
-  </nz-card>
+
 

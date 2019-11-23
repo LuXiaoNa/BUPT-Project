@@ -7,98 +7,73 @@
 <div nz-row nzGutter="16" style="margin-top: 1px;">
   <nz-card>
   <button nz-button nzType="primary" (click)="open()" style="margin-bottom: 10px"><i nz-icon type="search"></i>{{ 'button.search' | translate }}</button>
-  <button nz-button  (click)="reset()" style="margin-bottom: 10px"><i nz-icon type="reset"></i>重置数据</button>
-  <nz-drawer
-    [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
-    [nzMaskClosable]="false"
-    [nzWidth]="720"
-    [nzVisible]="visible"
-    nzTitle="搜索"
-    (nzOnClose)="close()"
-  >
-  <form nz-form  [formGroup]="validateForm">
-    <div nz-row nzGutter="8">
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>源IP</nz-form-label>
-          <nz-form-control class="form-control">
-            <input formControlName="srcIP"  nz-input />
+    <button nz-button  (click)="resetData()" style="margin-bottom: 10px">重置数据</button>
+    <nz-modal  [(nzVisible)]="visible" [nzTitle]="'搜索'" [nzFooter]="null" [nzWidth]="600" (nzOnCancel)="CancelAdd()">
+      <form nz-form  [formGroup]="validateForm">
+        <nz-form-item nz-row>
+          <nz-form-label [nzSpan]="4">源IP</nz-form-label>
+          <nz-form-control nz-col [nzSpan]="16" >
+            <input nz-input  formControlName="srcIP">
           </nz-form-control>
         </nz-form-item>
+
+            <nz-form-item nz-row>
+              <nz-form-label [nzSpan]="4">目的IP</nz-form-label>
+              <nz-form-control nz-col [nzSpan]="16">
+                <input formControlName="desIP" nz-input/>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item  nz-row>
+              <nz-form-label [nzSpan]="4">源端口</nz-form-label>
+              <nz-form-control nz-col [nzSpan]="16">
+                <input formControlName="srcPort"  nz-input />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label [nzSpan]="4">目的端口</nz-form-label>
+              <nz-form-control nz-col [nzSpan]="16">
+                <input formControlName="desPort"   nz-input />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label [nzSpan]="4">协议类型</nz-form-label>
+              <nz-form-control nz-col [nzSpan]="16">
+                <input formControlName="protocol" nz-input />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label [nzSpan]="4">木马类型</nz-form-label>
+              <nz-form-control nz-col [nzSpan]="16">
+                <input formControlName="type" nz-input />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label [nzSpan]="4">威胁等级</nz-form-label>
+              <nz-form-control nz-col [nzSpan]="16">
+                <input formControlName="threatLevel"  nz-input />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label [nzSpan]="4">发现时间</nz-form-label>
+              <nz-form-control nz-col [nzSpan]="16">
+                <nz-range-picker formControlName="time" nzShowTime></nz-range-picker>
+              </nz-form-control>
+            </nz-form-item>
+      </form>
+      <div style="height:1px;width:100%;border-top:1px solid #E5E5E5;margin-top: 5px"></div>
+      <div style="text-align: center;padding: 5px 0 10px 0;margin-top: 5px">
+        <button nz-button nzType="primary" (click)="search()">搜索</button>
+        <button nz-button [nzType]="'primary'"  class="mr-sm" (click)="initForm()">
+          <span>重置</span>
+        </button>
       </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>目的IP</nz-form-label>
-          <nz-form-control class="form-control">
-            <input formControlName="desIP" nz-input/>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-    <div nz-row nzGutter="8">
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>源端口</nz-form-label>
-          <nz-form-control class="form-control">
-            <input formControlName="srcPort"  nz-input />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>目的端口</nz-form-label>
-          <nz-form-control class="form-control">
-            <input formControlName="desPort"   nz-input />
-           </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-    <div nz-row nzGutter="8">
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>协议类型</nz-form-label>
-          <nz-form-control class="form-control">
-            <input formControlName="protocol" nz-input />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>木马类型</nz-form-label>
-          <nz-form-control class="form-control">
-            <input formControlName="type" nz-input />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-    <div nz-row nzGutter="8">
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>威胁等级</nz-form-label>
-          <nz-form-control class="form-control">
-            <input formControlName="threatLevel"  nz-input />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item class="form-item">
-          <nz-form-label>发现时间</nz-form-label>
-          <nz-form-control class="form-control">
-            <nz-range-picker formControlName="time" nzShowTime></nz-range-picker>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-  </form>
-    <div class="footer">
-      <button nz-button type="submit" nzType="primary" (click)="search()">{{ 'button.search' | translate }}</button>
-      <button nz-button nzType="primary" (click)="initForm()">{{ 'button.reset' | translate }}</button>
-    </div>
-  </nz-drawer>
+    </nz-modal>
+
   <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true" [nzTotal]="total"
             nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
             (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
-    <thead>
+    <thead  (nzSortChange)="sort($event)" nzSingleSort>
     <tr>
       <th>源IP</th>
       <th>目的IP</th>
@@ -106,8 +81,8 @@
       <th>目的端口</th>
       <th>协议类型</th>
       <th>木马类型</th>
-      <th>威胁等级</th>
-      <th>发现时间</th>
+      <th  nzShowSort nzSortKey="threatLevel">威胁等级</th>
+      <th nzShowSort nzSortKey="time">发现时间</th>
     </tr>
     </thead>
     <tbody>

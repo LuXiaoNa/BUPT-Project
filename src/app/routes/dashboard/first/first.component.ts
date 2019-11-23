@@ -16,130 +16,165 @@ export class DashboardFirstComponent implements OnInit {
    notHandleNum:number;
    handledNum:number;
    threatNum:number;
-/*  aletDistributeSelect:any;*/
-  //影响警告分布数据图单选框数据
-/*  aletDistributeOptions=[];*/
   //影响捕获报文数据图
   AaptureOption:any;
-  //影响捕获报文数据图选框数据
-  AaptureMessageSelect:any;
-  //影响捕获报文数据图选框数据源
-  AaptureMessageOptions=[];
   //影响检测流量数据图
   FlowOption:any;
-  //影响检测流量数据图单选框数据
-  DetectFlowSelect:any;
-  //影响检测流量数据图选框数据源
-  DetectFlowOptions=[];
-  //威胁
-  threatenSelect:any;
-  //影响威胁单选框数据
-  threatenOptions=[];
   time:string;
   srcIP:string;
   desIP:string;
   type:string;
   info:string;
-  //ip排名选框数据
-  TopOptions=[
-    {id:10,name:'Top10'},
-    {id:5,name:'Top5'},
-    {id:3,name:'Top3'}
-  ];
-  DnsTopOptions=[
-    {id:10,name:'Top10'},
-    {id:5,name:'Top5'},
-    {id:3,name:'Top3'}
-  ];
-  //木马IP统计数据图
-  TopSelect:any;
-  //DNSIP统计数据图
-  DnsTopSelect:any;
   IPOption:any;
   DnsIPOption:any;
+  //域名威胁等级
+  DnsOption:any;
+  //威胁等级柱状图
+  ThrenOption:any;
+  //滑动标签
+  tabIndex:number;
+  dituData:[];
   constructor(
     private http: _HttpClient
   ) {}
   ngOnInit() {
     this.aletDistributeSet();
-    // 时间对象定义
-    const timer = [
-      { id: 1, name: '5分钟' },
-      { id: 2, name: '1小时' },
-      { id: 3, name: '24小时' },
-    ];
-    this.TopSelect = 10;
-    this.DnsTopSelect=10;
-    //设置警告图表单选框初始值
-    this.optionSet(timer);
     this.AaptureMessageSet();
     this.DetectFlowSet();
     this.getDns();
     this.getThrenOption();
+    this.tabIndex=0;
+    this.TopSelectSet();
+    this.DnsTopSelectSet();
+    this.http.get(environment.PUBLIC_URL+'/info/ipAddress').subscribe((req:any[])=>{
+      if(req['data']!=null){
+        this.dituData=req['data'];
+        console.log(this.dituData)
+      }
+    });
     this.getDitu();
   }
+  test1(){
+    if(this.tabIndex==0){
+      this.TopSelectSet();
+    }else{
+      this.DnsTopSelectSet();
+    }
+  }
+  //地图
   Option:any;
   getDitu(){
     this.Option = {
       title : {
-        text: 'IP攻击实施监控',
+        text: 'IP攻击实时监控',
         subtext: '',
         left: 'center',
         textStyle: {
-         /* color: '#d6e4ff',*/
-          fontSize: '28',
+          fontSize: '24',
         },
       },
-      tooltip : {
+      tooltip : {   //悬浮显示数据
         trigger: 'item',
         formatter: function (val) {
-          return `攻击情况：<br>${val.data.name}：${val.data.value}%<br>攻击IP：${val.data.warn}<br>攻击次数：${val.data.problem}`;
+          return `攻击城市：${val.data.name}<br>攻击IP：${val.data.warn}`;
         }
       },
-      visualMap: {
-      /*  min: 0,
-        max: 100,
-        left: 'left',
-        top: 'bottom',
-        text:['高','低'],  */         // 文本，默认为数值文本
-        calculable : true,
-        inRange: {
-          color: ['#4F94CD', '#5CACEE']
+     /* legend: {     //标记省份
+        orient: 'vertical',
+        x:'left',
+       /!* data:['����'],*!/
+        selectedMode: 'single',
+        textStyle : {
+          color: '#575757'
         }
+      },*/
+      toolbox: {
+        show : true,
+        orient : 'vertical',
+        x: 'right',
+        y: 'top',
+        feature : {
+          mark : {show: true},
+          dataView : {show: true, readOnly: false}, //数据视图
+          restore : {show: true}, //刷新
+          saveAsImage : {show: true}   //保存
+        }
+      },
+      dataRange: {
+        min : 0,
+        max : 100,
+        x: 'left',
+        top: 'bottom',
+        calculable : true,
+       /* color: ['#0BC7FA','#0BB3E6','#128DE6','#1173E','#1949E6'],*/
+        color: ['#5CACEE','#00688B','#104E8B', '#4682B4','#36648B'],
+        textStyle:{
+          color:'#fff'
+        }
+      },
+      markLine : {
+        smooth:true,
+        effect : {
+          show: true,
+          scaleSize: 1,
+          period: 30,
+          color: '#fff',
+          shadowBlur: 10
+        },
+        itemStyle : {
+          normal: {
+            borderWidth:1,
+            lineStyle: {
+              type: 'solid',
+              shadowBlur: 10
+            }
+          }
+        },
+        data : [
+          //[{name:'�Ϻ�'}, {name:'����',value:95}]
+        ]
       },
       series : [
         {
-          name: '项目进度',
+          name: '省会',
           type: 'map',
           mapType: 'china',
           roam: false,
-          label: {
+         /* label: {显示省份名称
             normal: {
               show: true
             },
             emphasis: {
               show: true
             }
-          },
+          },*/
           itemStyle: {
-            color: 'red',
-            areaColor: '#36648B',
+          /*  color: 'red',
+            areaColor: '#36648B',*/
+            normal: {
+              borderWidth:1,
+              lineStyle: {
+                type: 'solid',
+                shadowBlur: 10
+              }
+            }
           },
           emphasis: {
             itemStyle: {
               areaColor: '#36648B'
             }
           },
+        /*  data:[this.dituData],*/
           data:[
-            {name: '北京',value: Math.round(Math.random()*100),warn: 10,problem: 12},
-            {name: '天津',value: Math.round(Math.random()*100),warn: 10,problem: 12},
-            {name: '上海',value: Math.round(Math.random()*100),warn: 10,problem: 12},
-            {name: '重庆',value: Math.round(Math.random()*100),warn: 10,problem: 12},
+            {name: '北京',value: 2},
+            {name: '天津',value: Math.round(Math.random()*100)},
+            {name: '上海',value: Math.round(Math.random()*100)},
+            {name: '重庆',value: Math.round(Math.random()*100)},
             {name: '河北',value: Math.round(Math.random()*100)},
             {name: '河南',value: Math.round(Math.random()*100)},
             {name: '云南',value: Math.round(Math.random()*100)},
             {name: '辽宁',value: Math.round(Math.random()*100)},
-            {name: '黑龙江',value: Math.round(Math.random()*100)},
+            {name: '黑龙江',value: 100},
             {name: '湖南',value: Math.round(Math.random()*100)},
             {name: '安徽',value: Math.round(Math.random()*100)},
             {name: '山东',value: Math.round(Math.random()*100)},
@@ -162,42 +197,13 @@ export class DashboardFirstComponent implements OnInit {
             {name: '四川',value: Math.round(Math.random()*100)},
             {name: '宁夏',value: Math.round(Math.random()*100)},
             {name: '海南',value: Math.round(Math.random()*100)},
-            // {name: '台湾',value: Math.round(Math.random()*100)},
+            {name: '台湾',value: Math.round(Math.random()*100)},
             {name: '香港',value: Math.round(Math.random()*100)},
-            {name: '澳门',value: Math.round(Math.random()*100)}
+            {name: '澳门',value: Math.round(Math.random()*100)},
+            {name: '菏泽',value: Math.round(Math.random()*100),warn:'11'}
           ]
         }
       ]
-    };
-  }
-
-  optionSet(timer){
-    this.AaptureMessageOptions = timer;
-    this.DetectFlowOptions = timer;
-    this.threatenOptions = timer;
-    this.AaptureMessageSelect = 3;
-    this.DetectFlowSelect = 3;
-    this.threatenSelect = 3;
-  }
-
-  timeSet(timer) {
-    let stime;
-    switch (timer) {
-      case 1:
-        stime = moment().subtract(5, 'minutes');
-        break;
-      case 2:
-        stime = moment().subtract(1, 'hours');
-        break;
-      case 3:
-        stime = moment().subtract(1, 'days');
-        break;
-   /*   case 4:
-        stime = moment().subtract(7, 'days');
-        break;*/
-    }
-    return {
-      stime: stime['_d'].getTime()
     };
   }
   //获取警告数据
@@ -210,150 +216,135 @@ export class DashboardFirstComponent implements OnInit {
       }
     });
   }
-/*  报文图描绘*/
-  AaptureDraw(data){
-    if(data.length === 0){
-      this.AaptureOption={};
-    }else{
-      let yAaptureData=[];
-      let xAaptureData=[];
-      for (let i=data.length-1;i>-1;i--){
-        yAaptureData.push(data[i]['packageNum']/10000);
-        let day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
-        xAaptureData.push(day);
-      }
-      this.AaptureOption = {
-        tooltip: {
-          trigger: 'axis',
-        },
-        color: ['#1E90FF'],
-        xAxis: {
-          type: 'category',
-          data: xAaptureData,
-          splitLine: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#1E90FF',
-            }
-          },
-          axisLabel: {
-            color: '#1E90FF'
-          }
-        },
-        yAxis: {
-          name: '数量(万)',
-          type: 'value',
-          splitLine: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#1E90FF',
-            }
-          }
-       },
-        series: [
-          {
-            symbol: 'none',
-            data: yAaptureData,
-            type: 'line',
-            areaStyle: { color: ['#1E90FF'] },
-          },
-        ],
-      };
-    }
-  }
   //获取报文数据
   AaptureMessageSet(){
-    let time = this.timeSet(this.AaptureMessageSelect);
+    let stime;
+    stime = moment().subtract(1, 'days');
+    console.log(stime['_d'].getTime());
     let params={
-      time:time.stime,
+      time:stime['_d'].getTime(),
     };
+    console.log(stime['_d'].getTime());
     this.http.get(environment.PUBLIC_URL+'/info/packageNum',params).subscribe((req:any[])=>{
-      let data;
       if(req['data']!=null){
-        data = req['data'];
-      }else{
-        data = [];
-      }
-      this.AaptureDraw(data);
+        console.log(req['data']);
+        let yAaptureData=[];
+        let xAaptureData=[];
+        for (let i=0;i<req['data'].length;i++){
+          yAaptureData.push(req['data'][i]['packageNum']/10000);
+          let day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
+          xAaptureData.push(day);
+        }
+        this.AaptureOption = {
+          tooltip: {
+            trigger: 'axis',
+          },
+          color: ['#1E90FF'],
+          xAxis: {
+            type: 'category',
+            data: xAaptureData,
+            splitLine: {
+              show: false
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#1E90FF',
+              }
+            },
+            axisLabel: {
+              color: '#1E90FF'
+            }
+          },
+          yAxis: {
+            name: '数量(万)',
+            type: 'value',
+            splitLine: {
+              show: false
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#1E90FF',
+              }
+            }
+          },
+          series: [
+            {
+              symbol: 'none',
+              data: yAaptureData,
+              type: 'line',
+              areaStyle: { color: ['#1E90FF'] },
+            },
+          ],
+        };
+      }/*else{
+        this.AaptureOption = {
+        }
+      }*/
     });
-  }
-  //检测流量绘图
-  DetectFlowDraw(data){
-    if(data.lenght === 0){
-      this.FlowOption={}
-    }else{
-      let yDetectFlowData=[];
-      let xDetectFlowData=[];
-      for (let i=data.length-1;i>-1;i--){
-        yDetectFlowData.push(data[i]['flowNum']/1048576);
-        let day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
-        xDetectFlowData.push(day);
-      }
-      this.FlowOption={
-        tooltip: {
-          trigger: 'axis',
-        },
-        color: ['#EE7600'],
-        xAxis: {
-          type: 'category',
-          data: xDetectFlowData,
-          splitLine: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#EE7600',
-            }
-          },
-          axisLabel: {
-            color: '#EE7600'
-          },
-        },
-        yAxis: {
-          name: '流量(M)',
-          type: 'value',
-          splitLine: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#EE7600',
-            }
-          }
-        },
-        series: [
-          {
-            symbol: 'none',
-            data: yDetectFlowData,
-            type: 'line',
-            areaStyle: { color: ['#EE7600'] },
-          },
-        ],
-      }
-    }
   }
   //获取检测流量数据
   DetectFlowSet(){
-    let time = this.timeSet(this.DetectFlowSelect);
+    let stime;
+    stime = moment().subtract(1, 'days');
     let params={
-      time:time.stime,
+      time:stime['_d'].getTime(),
     };
     this.http.get(environment.PUBLIC_URL+'/info/flowNum',params).subscribe((req:any[])=>{
-      let data;
       if(req['data']!=null){
-        data=req['data'];
+        let yDetectFlowData=[];
+        let xDetectFlowData=[];
+        for (let i=0;i<req['data'].length;i++){
+          yDetectFlowData.push(req['data'][i]['flowNum']/1048576);
+          let day=moment(Number(req['data'][i]['time'])).format('MM-DD HH:mm:ss');
+          xDetectFlowData.push(day);
+        }
+        this.FlowOption={
+          tooltip: {
+            trigger: 'axis',
+          },
+          color: ['#7AC5CD'],
+          xAxis: {
+            type: 'category',
+            data: xDetectFlowData,
+            splitLine: {
+              show: false
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#7AC5CD',
+              }
+            },
+            axisLabel: {
+              color: '#7AC5CD'
+            },
+          },
+          yAxis: {
+            name: '流量(M)',
+            type: 'value',
+            splitLine: {
+              show: false
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#7AC5CD',
+              }
+            }
+          },
+          series: [
+            {
+              symbol: 'none',
+              data: yDetectFlowData,
+              type: 'line',
+              areaStyle: { color: ['#7AC5CD'] },
+            },
+          ],
+        }
       }else{
-        data=[];
+        this.FlowOption={}
       }
-      this.DetectFlowDraw(data);
     });
   }
-  //域名威胁等级
-  DnsOption:any;
+  //DNS域名危险等级
   getDns(){
     this.http.get(environment.PUBLIC_URL+'/info/threatLevel').subscribe((req:any[])=> {
       if (req['data'] != null) {
@@ -361,10 +352,9 @@ export class DashboardFirstComponent implements OnInit {
         let yData = [];
         for (let i = 0; i < req['data'].length; i++) {
           xData.push(req['data'][i]['dangerLevel']);
-          yData.push(req['data'][i]['pencent'])
+          yData.push(req['data'][i]['number'])
         }
         this.DnsOption = {
-        /*  backgroundColor: '#333',*/
           tooltip : {
             trigger: 'item',
             formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -373,184 +363,23 @@ export class DashboardFirstComponent implements OnInit {
             orient: 'vertical',
             left: 'left',
             data: ['可以忽略','一般','值得注意','危险','十分危险'],
-            textStyle: {
-              fontSize: 14,
-              fontFamily: 'PingFangSC',
-              fontWeight: 400
-            }
           },
           series : [
             {
-              name: '访问来源',
+              name: '危险等级',
               type: 'pie',
               center: ['55%', '53%'],
-              radius: ['0', '110'],
-              selectedMode: 'single',
-              selectedOffset: 30,
-              clockwise: true,
+              radius: ['0', '90'],
               itemStyle: {
                 borderColor: '#04192b',
                 borderWidth: 1
               },
-              label: {
-                normal: {
-                  show: true,
-                  formatter: (params)=>{
-                    return '{color'+params.dataIndex+'| '+params.percent+'%}'
-                  },
-                  rich: {
-                    color0: {
-                      fontSize: 18,
-                      color: '#EBE806',
-                      fontWeight: 400,
-                      fontFamily: 'PingFangSC'
-                    },
-                    color1: {
-                      fontSize: 18,
-                      color: '#ca8622',
-                      fontWeight: 400,
-                      fontFamily: 'PingFangSC'
-                    },
-                    color2: {
-                      fontSize: 18,
-                      color: '#5EA6FE',
-                      fontWeight: 400,
-                      fontFamily: 'PingFangSC'
-                    },
-                    color3: {
-                      fontSize: 18,
-                      color: '#37FFF9',
-                      fontWeight: 400,
-                      fontFamily: 'PingFangSC'
-                    },
-                    color4: {
-                      fontSize: 18,
-                      color: '#FF5624',
-                      fontWeight: 400,
-                      fontFamily: 'PingFangSC'
-                    }
-                  }
-                }
-              },
-              labelLine: {
-                length: 24
-              },
-              emphasis: {
-                label: {
-                  show: true
-                }
-              },
               data:[
-                {
-                  value:yData[0], name:'可以忽略',
-                  itemStyle: {
-                    color: {
-                      type: 'radial',
-                      x: 550,
-                      y: 440,
-                      r: 120,
-                      colorStops: [{
-                        offset: 0, color: 'rgba(235,232,6, 0.2)' // 0% 处的颜色
-                      }, {
-                        offset: 1, color: '#EBE806' // 100% 处的颜色
-                      }],
-                      global: true // 缺省为 false
-                    }
-                  },
-                  labelLine: {
-                    lineStyle: {
-                      color: '#EBE806'
-                    }
-                  }
-                },
-                {
-                  value:yData[1], name:'一般',
-                  itemStyle: {
-                    color: {
-                      type: 'radial',
-                      x: 550,
-                      y: 440,
-                      r: 120,
-                      colorStops: [{
-                        offset: 0, color: 'rgba(255,86,36, 0.2)' // 0% 处的颜色
-                      }, {
-                        offset: 1, color: '#ca8622' // 100% 处的颜色
-                      }],
-                      global: true // 缺省为 false
-                    }
-                  },
-                  labelLine: {
-                    lineStyle: {
-                      color:'#ca8622'
-                    }
-                  }
-                },
-                {
-                  value:yData[2], name:'值得注意',
-                  itemStyle: {
-                    color: {
-                      type: 'radial',
-                      x: 550,
-                      y: 440,
-                      r: 120,
-                      colorStops: [{
-                        offset: 0, color: 'rgba(94,166,254, 0.2)' // 0% 处的颜色
-                      }, {
-                        offset: 1, color: '#5EA6FE' // 100% 处的颜色
-                      }],
-                      global: true // 缺省为 false
-                    }
-                  },
-                  labelLine: {
-                    lineStyle: {
-                      color: '#5EA6FE'
-                    }
-                  }
-                },
-                {
-                  value:yData[3], name:'危险',
-                  itemStyle: {
-                    color: {
-                      type: 'radial',
-                      x: 550,
-                      y: 440,
-                      r: 120,
-                      colorStops: [{
-                        offset: 0, color: 'rgba(0,222,215, 0.2)' // 0% 处的颜色
-                      }, {
-                        offset: 1, color: '#37FFF9' // 100% 处的颜色
-                      }],
-                      global: true // 缺省为 false
-                    }
-                  },
-                  labelLine: {
-                    lineStyle: {
-                      color: '#37FFF9'
-                    }
-                  }
-                  },
-                {
-                  value:yData[4], name:'十分危险',
-                  itemStyle: {
-                    color: {
-                      type: 'radial',
-                      x: 550,
-                      y: 440,
-                      r: 120,
-                      colorStops: [{
-                        offset: 0, color: 'rgba(255,86,36, 0.2)' // 0% 处的颜色
-                      }, {
-                        offset: 1, color: '#FF5624' // 100% 处的颜色
-                      }],
-                      global: true // 缺省为 false
-                    }
-                  },
-                  labelLine: {
-                    lineStyle: {
-                      color: '#FF5624'
-                    }
-                  }
-                },
+                {value:yData[0], name:'可以忽略'},
+                {value:yData[1], name:'一般'},
+                {value:yData[2], name:'值得注意'},
+                {value:yData[3], name:'危险'},
+                {value:yData[4], name:'十分危险'},
               ],
             }
           ]
@@ -558,27 +387,18 @@ export class DashboardFirstComponent implements OnInit {
       }
     });
   }
-  //威胁等级柱状图
-  ThrenOption:any;
+  //威胁等级堆叠柱状图
   getThrenOption(){
     this.http.get(environment.PUBLIC_URL+'/info/threatLevelNum').subscribe((req:any[])=> {
       if (req['data'] != null) {
         let xData = [];
         let yData1 = [];
         let yData2 = [];
-        let totalData=[];
-        let total:number;
-        console.log(req['data']);
         xData.push(req['data'][0]['type']);
         for (let i = 0; i < req['data'].length; i++) {
           yData1.push(req['data'][i]['level'][0]);
           yData2.push(req['data'][i]['level'][1])
         }
-        for(let j=0;j<yData1[0].length;j++){
-          total=yData1[0][j]+yData2[0][j];
-          totalData.push(total)
-        }
-        console.log("totalData========",totalData)
         this.ThrenOption={
           tooltip : {
             trigger: 'axis',
@@ -601,7 +421,7 @@ export class DashboardFirstComponent implements OnInit {
           xAxis : [
             {
               type : 'category',
-              data:totalData,
+              data:['可以忽略','一般','值得注意','危险','十分危险'],
               splitLine: {
                 show: false
               },
@@ -634,7 +454,6 @@ export class DashboardFirstComponent implements OnInit {
               type:'bar',
               stack:'威胁',
               data:yData1[0],
-
             },
             {
               name:'DNS',
@@ -650,16 +469,16 @@ export class DashboardFirstComponent implements OnInit {
   //获取木马ip访问统计排名
   TopSelectSet(){
     const params={
-      n:this.TopSelect,
+      n:10,
     };
     this.http.get(environment.PUBLIC_URL+'/info/trojanIpCount',params).subscribe((req:any[])=>{
       if(req['data']!=null){
         let xData=[];
         let yData=[];
-       for(let i=0;i<req['data'].length;i++){
-         yData.push(req['data'][i]['ip']);
-         xData.push(req['data'][i]['countnumber'])
-       }
+        for(let i=0;i<req['data'].length;i++){
+          yData.push(req['data'][i]['ip']);
+          xData.push(req['data'][i]['countnumber'])
+        }
         this.IPOption = {
           color: ['#CD2626'],
           tooltip: {
@@ -689,10 +508,10 @@ export class DashboardFirstComponent implements OnInit {
             type: 'category',  //决定显示横柱形还是竖柱形
             name: 'ip',
             data: yData.reverse(),
-           splitLine: {
+            splitLine: {
               show: false
             },
-             axisLabel: {
+            axisLabel: {
               color: '#CD2626'
             },
             axisLine: {
@@ -713,7 +532,7 @@ export class DashboardFirstComponent implements OnInit {
   //获取DNSip访问统计
   DnsTopSelectSet(){
     const params={
-      n:this.DnsTopSelect,
+      n:10,
     };
     this.http.get(environment.PUBLIC_URL+'/info/dnsIpCount',params).subscribe((req:any[])=>{
       if(req['data']!=null){
@@ -773,13 +592,5 @@ export class DashboardFirstComponent implements OnInit {
       }
     });
   }
-  //滑动标签设置
-  tabIndex:number;
-  test1(){
-    if(this.tabIndex==0){
 
-    }else{
-
-    }
-  }
 }

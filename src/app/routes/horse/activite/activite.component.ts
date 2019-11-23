@@ -15,8 +15,6 @@ export class HorseActiviteComponent implements OnInit {
   //查询表单
   validateForm:FormGroup;
   visible=false;
-  /*  controlArray: any[] = [];
-   isCollapse = true;*/
   listOfDisplayData=[];
   //总条数
   total:number;
@@ -56,15 +54,13 @@ export class HorseActiviteComponent implements OnInit {
   }
 
   //查询数据
-
   open(){
       this.visible = true;
       this.pageIndex=1;
       this.pageSize=10;
   }
-  close(){
+  CancelAdd(){
     this.visible = false;
-
   }
   search(){
     if(this.validateForm.value.srcIP!=null&&this.validateForm.value.srcIP!=""){
@@ -123,24 +119,26 @@ export class HorseActiviteComponent implements OnInit {
      type:this.Type,
      threatLevel:this.ThreatLevel,
    };
+    console.log(params);
    this.http.get(environment.PUBLIC_URL+'/trojan',params).subscribe((req:any[])=>{
      if(req['data']!=null){
-       console.log(req['data'])
        this.listOfDisplayData=req['data'][0]['content'];
        this.total=req['data'][0]['totalElements'];
+       console.log(this.listOfDisplayData)
      }else{
        this.listOfDisplayData=[];
        this.total=0;
      }
      this.visible = false;
+     this.initForm();
    });
-    this.initForm();
   }
   //重置查询表单
   initForm(){
     this.validateForm.reset();
   }
-  reset(){
+  //重置数据
+  resetData(){
     this.search();
   }
   refreshStatus(){
@@ -149,4 +147,29 @@ export class HorseActiviteComponent implements OnInit {
   currentPageDataChange($event){
 
   }
+  //排序
+  sortName:string | null = null;
+  sortValue:string | null = null;
+  sort(sort:{key:string;value:string}):void{
+    /*console.log(key)*/
+    this.sortName = sort.key;
+    this.sortValue = sort.value;
+   /* this.listOfDisplayData:Array<{[key: string]: string | number}>*/
+   /* const data=this.listOfDisplayData;*/
+    if( this.sortName && this.sortValue){
+      this.listOfDisplayData = this.listOfDisplayData.sort((a,b)=>
+        this.sortValue==='ascend'
+          ?a[this.sortName!]>b[this.sortName!]
+          ? 1
+          :-1
+          :b[this.sortName!]>a[this.sortName]
+          ?1
+          :-1
+      );
+    }/*else{
+      this.listOfDisplayData= this.listOfDisplayData;
+    }*/
+  }
+
+
 }

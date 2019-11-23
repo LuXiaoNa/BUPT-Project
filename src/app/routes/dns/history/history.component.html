@@ -4,86 +4,89 @@
   </h1>
 </div>
 
+<div nz-row nzGutter="16" >
+  <div nz-col nzSpan="12">
+    <nz-card>
+      <div echarts [options]="Option"  class="demo-chart" style="width: 100%;"></div>
+     <!-- <nz-select [(ngModel)]="TopSelect" nzSize="small" (ngModelChange)="TopSelectSet()"
+                 class="TimeSelect">
+        <nz-option *ngFor="let option of TimeOptions" [nzLabel]="option.name" [nzValue]="option.id">
+        </nz-option>
+      </nz-select>-->
+    </nz-card>
+  </div>
+  <div nz-col nzSpan="12">
+    <nz-card>
+      <div echarts [options]="domainOption" class="demo-chart" style="width: 100%;"></div>
+    </nz-card>
+  </div>
+</div>
 
-<nz-card [nzTitle]="'DNS检测'">
-    <div echarts [options]="Option"  class="demo-chart" style="width: 100%;"></div>
-  <nz-select [(ngModel)]="TopSelect" nzSize="small" (ngModelChange)="TopSelectSet()"
-             class="TimeSelect">
-    <nz-option *ngFor="let option of TimeOptions" [nzLabel]="option.name" [nzValue]="option.id">
-    </nz-option>
-  </nz-select>
-</nz-card>
 
 <nz-card>
-  <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzTotal]="total" nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true"
+  <!--<h1 style="margin-left:48%">DNS检测最新一次详情</h1>-->
+  <nz-divider nzText="DNS最新一次检测详情"></nz-divider>
+  <button nz-button nzType="primary" (click)="open()" style="margin-bottom: 10px"><i nz-icon type="search"></i>{{ 'button.search' | translate }}</button>
+  <button nz-button  (click)="resetData()" style="margin-bottom: 10px"><i nz-icon type="reset"></i>重置数据</button>
+  <nz-modal  [(nzVisible)]="visible" [nzTitle]="'搜索'" [nzFooter]="null" [nzWidth]="600" (nzOnCancel)="CancelAdd()">
+    <form nz-form  [formGroup]="validateForm">
+      <nz-form-item nz-row>
+        <nz-form-label [nzSpan]="4">源IP</nz-form-label>
+        <nz-form-control nz-col [nzSpan]="16" >
+          <input nz-input  formControlName="srcIplist">
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item nz-row>
+        <nz-form-label [nzSpan]="4">目的IP</nz-form-label>
+        <nz-form-control nz-col [nzSpan]="16">
+          <input formControlName="desIplist" nz-input/>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item  nz-row>
+        <nz-form-label [nzSpan]="4">IP所在城市</nz-form-label>
+        <nz-form-control nz-col [nzSpan]="16">
+          <input formControlName="citylist"  nz-input />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nz-row>
+        <nz-form-label [nzSpan]="4">域名</nz-form-label>
+        <nz-form-control nz-col [nzSpan]="16">
+          <input formControlName="domain"   nz-input />
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <div style="height:1px;width:100%;border-top:1px solid #E5E5E5;margin-top: 5px"></div>
+    <div style="text-align: center;padding: 5px 0 10px 0;margin-top: 5px">
+      <button nz-button nzType="primary" (click)="search()">搜索</button>
+      <button nz-button [nzType]="'primary'"  class="mr-sm" (click)="initForm()">
+        <span>重置</span>
+      </button>
+    </div>
+  </nz-modal>
+  <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true" [nzTotal]="total"
+             nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
              (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
     <thead>
     <tr>
-      <th>自制网络数</th>
-      <th>国家数</th>
-      <th>A记录数</th>
+      <th>域名</th>
+      <th>IP</th>
       <th>源IP</th>
       <th>目的IP</th>
       <th>IP所在城市</th>
-      <th>域名</th>
+      <th style="max-width: 200px">时间</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let data of filterTable.data">
-      <!--<td>{{ data.detectTime | date:"yyyy-MM-dd HH:mm:ss"}}</td>-->
-      <td>{{data.asnNumber}}</td>
-      <td>{{data.countryNumber}}</td>
-      <td>{{data.aRecordNumber}}</td>
-      <td>{{data.srcIplist}}</td>
-      <td>{{data.desIplist}}</td>
-      <td>{{data.citylist}}</td>
       <td>{{data.domain}}</td>
+      <td>{{data.ip}}</td>
+      <td>{{data.srcIplist}}</td>
+      <td >{{data.desIplist}}</td>
+      <td>{{data.citylist}}</td>
+      <td>{{data.detectTime | date:"yyyy-MM-dd HH:mm:ss" }}</td>
     </tr>
     </tbody>
   </nz-table>
 </nz-card>
-
-
-
-<!--
-<nz-card>
-  <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzTotal]="total" nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true"
-             (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
-    <thead>
-    <tr>
-      <th>检测时间</th>
-      <th>查看详情</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let data of filterTable.data">
-      <td>{{ data.detectTime | date:"yyyy-MM-dd HH:mm:ss"}}</td>
-      <td>
-        <a (click)="showDetail(data)">详情</a>
-      </td>
-    </tr>
-    </tbody>
-  </nz-table>
-</nz-card>
-<nz-modal [(nzVisible)]="isVisible" nzWidth="900" nzTitle="DNS检测详情" [nzFooter]="null"  [nzContent]="modalContentdeteil" (nzOnCancel)="detailConceal()">
-  <ng-template #modalContentdeteil>
-    <nz-table #Table [nzData]="dataSetdynamic" nzBordered  nzSize="default" [(nzPageIndex)]="pageIndexDetail" [(nzPageSize)]="pageSizeDetail" [nzTotal]="totalDetail"  (nzPageIndexChange)="refreshStatusDetail()" (nzPageSizeChange)="refreshStatusDetail()" (nzCurrentPageDataChange)="currentPageDataChangeDetail($event)"
-              [nzShowSizeChanger]="true" [nzShowQuickJumper]="true">
-      <thead>
-      <tr>
-        <th>域名</th>
-        <th>ip</th>
-      &lt;!&ndash;  <th>总数</th>&ndash;&gt;
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let itemdetail of Table.data">
-        <td style="width:200px;">{{itemdetail.domain}}</td>
-        <td style="width: 290px">{{itemdetail.ip}}</td>
-       &lt;!&ndash; <td style="width:200px;">{{itemdetail.countnumber}}</td>&ndash;&gt;
-      </tr>
-      </tbody>
-    </nz-table>
-  </ng-template>
-</nz-modal>
--->
