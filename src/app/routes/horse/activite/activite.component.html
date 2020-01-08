@@ -72,8 +72,8 @@
 
   <nz-table #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true" [nzTotal]="total"
             nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
-            (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
-    <thead  (nzSortChange)="sort($event)" nzSingleSort>
+            (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()">
+   <!-- <thead  (nzSortChange)="sort($event)" nzSingleSort>-->
     <tr>
       <th>源IP</th>
       <th>目的IP</th>
@@ -81,10 +81,12 @@
       <th>目的端口</th>
       <th>协议类型</th>
       <th>木马类型</th>
-      <th  nzShowSort nzSortKey="threatLevel">威胁等级</th>
-      <th nzShowSort nzSortKey="time">发现时间</th>
+     <!-- <th  nzShowSort nzSortKey="threatLevel">威胁等级</th>
+      <th nzShowSort nzSortKey="time">发现时间</th>-->
+      <th>威胁等级</th>
+      <th>发现时间</th>
     </tr>
-    </thead>
+   <!-- </thead>-->
     <tbody>
     <tr *ngFor="let data of filterTable.data" class="tableTr">
       <td>{{ data.srcIP }}</td>

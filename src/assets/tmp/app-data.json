@@ -45,12 +45,6 @@
               "i18n": "menu.detection.history"
             }
           ]
-        },
-        {
-          "text": "Account",
-          "i18n": "menu.account.settings",
-          "icon": "anticon-user",
-          "link": "/pro/account/settings"
         }
       ]
     }

@@ -11,7 +11,7 @@ import {
   templateUrl: './form.component.html',
 })
 export class DelonFormComponent implements OnInit {
-  //查询表单
+  // 查询表单
   validateForm:FormGroup;
 /*  controlArray: any[] = [];
   isCollapse = true;*/
@@ -77,11 +77,11 @@ export class DelonFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  //查询数据
+  // 查询数据
   search(){
 
   }
-  //重置查询表单
+  // 重置查询表单
   initForm(){
     this.validateForm.reset();
   }

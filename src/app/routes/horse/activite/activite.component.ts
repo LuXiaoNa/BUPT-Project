@@ -12,25 +12,6 @@ import {
   templateUrl: './activite.component.html',
 })
 export class HorseActiviteComponent implements OnInit {
-  //查询表单
-  validateForm:FormGroup;
-  visible=false;
-  listOfDisplayData=[];
-  //总条数
-  total:number;
-  // 当前页码
-  pageIndex: number;
-  // 一页显示的条数
-  pageSize: number;
-  toTime:string;
-  fromTime:string;
-  SrcPort:number;
-  DesPort:number;
-  ThreatLevel:number;
-  SrcIp:string;
-  DstIp:string;
-  Protocol:string;
-  Type:string;
   constructor(
     private http: _HttpClient,
     private fb: FormBuilder,
@@ -46,66 +27,97 @@ export class HorseActiviteComponent implements OnInit {
       time:['']
     });
   }
+  // 查询表单
+  validateForm:FormGroup;
+  visible=false;
+  listOfDisplayData=[];
+  // 总条数
+  total:number;
+  // 当前页码
+  pageIndex: number;
+  // 一页显示的条数
+  pageSize: number;
+  toTime:string;
+  fromTime:string;
+  SrcPort:number;
+  DesPort:number;
+  ThreatLevel:number;
+  SrcIp:string;
+  DstIp:string;
+  Protocol:string;
+  Type:string;
+  // 排序
+  sortName:string | null = null;
+  sortValue:string | null = null;
   ngOnInit() {
     this.pageIndex=1;
     this.pageSize=10;
     this.total=0;
-    this.search();
+    this.getData();
   }
-
-  //查询数据
+  // 查询数据
   open(){
       this.visible = true;
-      this.pageIndex=1;
-      this.pageSize=10;
+      this.initForm();
   }
   CancelAdd(){
     this.visible = false;
   }
-  search(){
-    if(this.validateForm.value.srcIP!=null&&this.validateForm.value.srcIP!=""){
+ search(){
+   this.pageIndex=1;
+   this.pageSize=10;
+   this.getData();
+ }
+  getData(){
+    if(this.validateForm.value.srcIP!=null&&this.validateForm.value.srcIP!==""){
+      console.log();
       this.SrcIp=this.validateForm.value.srcIP;
     }else{
       this.SrcIp=""
     }
-    if(this.validateForm.value.desIP!=null&&this.validateForm.value.desIP!=""){
+    if(this.validateForm.value.desIP!=null&&this.validateForm.value.desIP!==""){
+      console.log(this.validateForm.value.desIP);
       this.DstIp=this.validateForm.value.desIP;
     }else{
       this.DstIp=""
     }
-    if(this.validateForm.value.protocol!=null&&this.validateForm.value.protocol!=""){
+    if(this.validateForm.value.protocol!=null&&this.validateForm.value.protocol!==""){
+      console.log();
       this.Protocol=this.validateForm.value.protocol;
     }else{
       this.Protocol=""
     }
-    if(this.validateForm.value.type!=null&&this.validateForm.value.type!=""){
+    if(this.validateForm.value.type!==null&&this.validateForm.value.type!==""){
+      console.log();
       this.Type=this.validateForm.value.type;
     }else{
       this.Type=""
     }
-    if(this.validateForm.value.time!=[]&&this.validateForm.value.time!=null){
+    if(this.validateForm.value.time!==[]&&this.validateForm.value.time!==null&&this.validateForm.value.time!==""){
       this.fromTime = new Date(this.validateForm.value.time[0]).getTime().toString();
       this.toTime = new Date(this.validateForm.value.time[1]).getTime().toString();
     }else{
       this.fromTime="";
       this.toTime ="";
     }
-    if(this.validateForm.value.srcPort!=""&&this.validateForm.value.srcPort!=null){
+    if(this.validateForm.value.srcPort!==""&&this.validateForm.value.srcPort!==null){
+      console.log();
       this.SrcPort=Number(this.validateForm.value.srcPort)
     }else{
       this.SrcPort=-1
     }
-    if(this.validateForm.value.desPort!=""&&this.validateForm.value.desPort!=null){
+    if(this.validateForm.value.desPort!==""&&this.validateForm.value.desPort!==null){
+      console.log();
       this.DesPort=Number(this.validateForm.value.desPort);
     }else{
       this.DesPort=-1;
     }
-    if(this.validateForm.value.threatLevel!=""&&this.validateForm.value.threatLevel!=null){
+    if(this.validateForm.value.threatLevel!==""&&this.validateForm.value.threatLevel!==null){
+      console.log();
       this.ThreatLevel=Number(this.validateForm.value.threatLevel)
     }else{
       this.ThreatLevel=-1;
     }
-
    const params={
      page:(this.pageIndex-1),
      size:this.pageSize,
@@ -119,37 +131,30 @@ export class HorseActiviteComponent implements OnInit {
      type:this.Type,
      threatLevel:this.ThreatLevel,
    };
-    console.log(params);
-   this.http.get(environment.PUBLIC_URL+'/trojan',params).subscribe((req:any[])=>{
-     if(req['data']!=null){
-       this.listOfDisplayData=req['data'][0]['content'];
-       this.total=req['data'][0]['totalElements'];
-       console.log(this.listOfDisplayData)
+   this.http.get(environment.PUBLIC_URL+'/trojan',params).subscribe((req:any)=>{
+     if(req.data!=null){
+       this.listOfDisplayData=req.data[0].content;
+       this.total=req.data[0].totalElements;
      }else{
        this.listOfDisplayData=[];
        this.total=0;
      }
      this.visible = false;
-     this.initForm();
    });
   }
-  //重置查询表单
+
+  // 重置查询表单
   initForm(){
     this.validateForm.reset();
   }
-  //重置数据
+  // 重置数据
   resetData(){
-    this.search();
+    this.initForm();
+    this.getData();
   }
-  refreshStatus(){
-    this.search();
+  refreshStatus():void{
+    this.getData()
   }
-  currentPageDataChange($event){
-
-  }
-  //排序
-  sortName:string | null = null;
-  sortValue:string | null = null;
   sort(sort:{key:string;value:string}):void{
     /*console.log(key)*/
     this.sortName = sort.key;
@@ -170,6 +175,4 @@ export class HorseActiviteComponent implements OnInit {
       this.listOfDisplayData= this.listOfDisplayData;
     }*/
   }
-
-
 }

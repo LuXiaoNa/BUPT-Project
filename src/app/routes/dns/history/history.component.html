@@ -7,27 +7,21 @@
 <div nz-row nzGutter="16" >
   <div nz-col nzSpan="12">
     <nz-card>
-      <div echarts [options]="Option"  class="demo-chart" style="width: 100%;"></div>
-     <!-- <nz-select [(ngModel)]="TopSelect" nzSize="small" (ngModelChange)="TopSelectSet()"
-                 class="TimeSelect">
-        <nz-option *ngFor="let option of TimeOptions" [nzLabel]="option.name" [nzValue]="option.id">
-        </nz-option>
-      </nz-select>-->
+      <div echarts #Line class="demo-chart"   style="width: 100%;height: 220px;"></div>
     </nz-card>
   </div>
   <div nz-col nzSpan="12">
     <nz-card>
-      <div echarts [options]="domainOption" class="demo-chart" style="width: 100%;"></div>
+      <div echarts #domain class="demo-chart" style="width: 100%;height: 220px;"></div>
     </nz-card>
   </div>
 </div>
 
 
 <nz-card>
-  <!--<h1 style="margin-left:48%">DNS检测最新一次详情</h1>-->
   <nz-divider nzText="DNS最新一次检测详情"></nz-divider>
   <button nz-button nzType="primary" (click)="open()" style="margin-bottom: 10px"><i nz-icon type="search"></i>{{ 'button.search' | translate }}</button>
-  <button nz-button  (click)="resetData()" style="margin-bottom: 10px"><i nz-icon type="reset"></i>重置数据</button>
+  <button nz-button  (click)="resetData()" style="margin-bottom: 10px">重置数据</button>
   <nz-modal  [(nzVisible)]="visible" [nzTitle]="'搜索'" [nzFooter]="null" [nzWidth]="600" (nzOnCancel)="CancelAdd()">
     <form nz-form  [formGroup]="validateForm">
       <nz-form-item nz-row>
@@ -67,11 +61,11 @@
   </nz-modal>
   <nz-table  #filterTable [nzData]="listOfDisplayData" nzBordered  nzShowPagination nzShowSizeChanger [nzShowQuickJumper]="true" [nzTotal]="total"
              nzFrontPagination="false"  [nzFooter]="'共'+total+'条数据'" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
-             (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()" (nzCurrentPageDataChange)="currentPageDataChange($event)">
+             (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()">
     <thead>
     <tr>
       <th>域名</th>
-      <th>IP</th>
+      <th>解析IP</th>
       <th>源IP</th>
       <th>目的IP</th>
       <th>IP所在城市</th>

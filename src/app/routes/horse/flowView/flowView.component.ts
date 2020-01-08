@@ -1,10 +1,19 @@
-import { Component, OnInit, ViewChild,ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ElementRef,
+  AfterViewInit
+} from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import * as moment from 'moment';
 import {
   FormBuilder,
 } from '@angular/forms';
 import {environment} from "@env/environment";
+import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-hourse-flowView',
@@ -12,58 +21,82 @@ import {environment} from "@env/environment";
   templateUrl: './flowView.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HorseFlowViewComponent implements OnInit {
-  //影响捕获报文数据图
-   FlowOption:any;
-  //影响捕获报文数据图选框数据
-  FlowSelect:any;
-  //影响捕获报文数据图选框数据源
-  FlowOptionsDate=[];
+export class HorseFlowViewComponent implements OnInit,AfterViewInit {
+   //流量视图
+  @ViewChild('Flow',{static:true}) Flow:ElementRef;
+  myChartFlow:any;
+  //源端口
+  @ViewChild('SrcPort',{static:true}) SrcPort:ElementRef;
+  myChartSrc:any;
+  /*目的端口*/
+  @ViewChild('DesPort',{static:true}) DesPort:ElementRef;
+  myChartDes:any;
 
-  listOfParentData: any[] = [];
-  listOfChildrenData: any[] = [];
-  //源端口选框数据源
+  // 影响捕获报文数据图
+   FlowOption:any;
+  // 影响捕获报文数据图选框数据
+  FlowSelect:any;
+  // 影响捕获报文数据图选框数据源
+  FlowOptionsDate=[];
+  // 源端口选框数据源
   SrcPortTopSelect:any;
-  SrcPortOption:any;
-  SrcPortTopOptions=[
-    {id:10,name:'Top10'},
-    {id:5,name:'Top5'},
-    {id:3,name:'Top3'}
-  ];
-  //目的端口选框数据源
+  SrcPortTopOptions=[];
+  // 目的端口选框数据源
   DesPortOption:any;
   DesPortTopSelect:any;
-  DesPortTopOptions=[
-    {id:10,name:'Top10'},
-    {id:5,name:'Top5'},
-    {id:3,name:'Top3'}
-  ];
+  DesPortTopOptions=[];
   constructor(
     private http: _HttpClient,
     private fb: FormBuilder,
   ) {}
-
+ ngAfterViewInit(): void {
+    this.SrcPortTopSelectSet();
+    this.DesPortTopSelectSet();
+    this.flowTimeSelectSet();
+  }
   ngOnInit() {
     // 时间对象定义
     const timer = [
       {id: 1, name: '最近5分钟'},
       {id: 2, name: '最近1小时'},
       {id: 3, name: '最近24小时'},
-      /*{ id: 4, name: '最近7天' },*/
     ];
-    //设置警告图表单选框初始值
+   const TopOptions=[
+      {id:10,name:'Top10'},
+      {id:5,name:'Top5'},
+      {id:3,name:'Top3'}
+    ];
+    // 设置警告图表单选框初始值
     this.getAlet(timer);
-    this.SrcPortTopSelect=10;
-    this.DesPortTopSelect=10;
+    this.getTop(TopOptions);
+   /* this.flowTimeSelectSet();*/
   }
-
   getAlet(timer){
     this.FlowOptionsDate=timer;
     this.FlowSelect = 3;
   }
+  getTop(TopOptions){
+    this.SrcPortTopOptions=TopOptions;
+    this.DesPortTopOptions=TopOptions;
+    this.SrcPortTopSelect=10;
+    this.DesPortTopSelect=10;
+  }
+  /*重新渲染图表*/
+  changeTime(type){
+    switch(type){
+      case 'flow':
+        this.flowTimeSelectSet();
+        break;
+      case 'SrcPort':
+        this.SrcPortTopSelectSet();
+        break;
+      case 'DesIp':
+        this.DesPortTopSelectSet();
+        break;
+    }
+  }
   timeSet(timer) {
     let stime;
-  /*  let etime = moment();*/
     switch (timer) {
       case 1:
         stime = moment().subtract(5, 'minutes');
@@ -74,261 +107,301 @@ export class HorseFlowViewComponent implements OnInit {
       case 3:
         stime = moment().subtract(1, 'days');
         break;
-     /* case 4:
-        stime = moment().subtract(7, 'days');
-        break;*/
     }
     return {
-      stime: stime['_d'].getTime(),
+      stime: stime._d.getTime(),
     };
   }
-  FlowDraw(data){
-    if (data.length!=0){
-      let xFlowData=[];
-      let yProtocalData=[];
-      let pro1=[];
-      let pro2=[];
-      let pro3=[];
-      for (let i=data.length-1;i>-1;i--){
-        yProtocalData=data[0].protocol;
-        var day=moment(Number(data[i]['time'])).format('MM-DD HH:mm:ss');
-        xFlowData.push(day);
-        pro1.push(data[i]['size'][0]);
-        pro2.push(data[i]['size'][1]);
-        pro3.push(data[i]['size'][2])
-      }
-      console.log("yProtocalData",yProtocalData);
-      console.log("xFlowData",xFlowData);
-      console.log("pro1",pro1);
-      console.log("pro2",pro2);
-      console.log("pro3",pro3);
-      this.FlowOption = {
-        tooltip : {
-          trigger: 'axis',
-          axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-          }
-        },
-        legend: {
-          data:yProtocalData,
-          textStyle: {
-            color: '#FF3030',
-          }
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis : [
-          {
-            type : 'category',
-            data:xFlowData,
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#FF3030',
-              }
-            },
-            axisLabel: {
-              color: '#FF3030'
+  /*流量视图*/
+  flowTimeSelectSet() {
+    this.myChartFlow = echarts.init(this.Flow.nativeElement);
+    this.myChartFlow.setOption({
+      tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+          type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+      },
+      legend: {
+        data:[],
+        textStyle: {
+          color: '#FF3030',
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis : [
+        {
+          type : 'category',
+          data:[],
+          splitLine: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#FF3030',
             }
-           }
+          },
+          axisLabel: {
+            color: '#FF3030'
+          }
+        }
 
-        ],
-        yAxis : [
-          {
-            type : 'value',
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#FF3030',
-              }
-            },
-          }
-        ],
-        series : [
-          {
-            name:'TCP',
-            type:'bar',
-            stack: '协议',
-            data:pro1
+      ],
+      yAxis : [
+        {
+          name:'流量(M)',
+          type : 'value',
+          splitLine: {
+            show: false
           },
-          {
-            name:'UDP',
-            type:'bar',
-            stack: '协议',
-            data:pro2
+          axisLine: {
+            lineStyle: {
+              color: '#FF3030',
+            }
           },
-          {
-            name:'DNS',
-            type:'bar',
-            stack: '协议',
-            data:pro3
-          }
-        ]
-      };
-    }else{
-      this.FlowOption ={}
-    }
-  }
-  changeTime() {
-    let time = this.timeSet(this.FlowSelect);
-    let params={
+        }
+      ],
+      series : [
+        {
+          name:'DNS',
+          type:'bar',
+          stack: '协议',
+          data:[]
+        },
+        {
+          name:'HTTP',
+          type:'bar',
+          stack: '协议',
+          data:[]
+        },
+        {
+          name:'UNKNOUW',
+          type:'bar',
+          stack: '协议',
+          data:[]
+        }
+      ]
+    });
+    const time = this.timeSet(this.FlowSelect);
+    const params={
       time:time.stime
     };
-    this.http.get(environment.PUBLIC_URL+'/trojan/view/flow',params).subscribe((req:any[])=>{
-      let data;
-      if(req['data']!=null){
-
-        data=req['data'];
-      }else{
-        data=[]
-      }
-      this.FlowDraw(data);
-      console.log(data)
-    });
-  }
-  //恶意源端口
-  SrcPortTopSelectSet(){
-    const params={
-      top:this.SrcPortTopSelect,
-    };
-    this.http.get(environment.PUBLIC_URL+'/trojan/view/srcPort',params).subscribe((req:any[])=> {
-      if (req['data'] != null) {
-        let ySrcDataNumber = [];
-        let xSrcDataPort = [];
-        for (let i = 0; i < req['data'].length; i++) {
-          ySrcDataNumber.push(req['data'][i]['number']);
-          xSrcDataPort.push(req['data'][i]['port']);
+    console.log(params)
+    this.myChartFlow.showLoading();
+    this.http.get(environment.PUBLIC_URL+'/trojan/view/flow',params).subscribe((req:any)=>{
+      if (req.data!=null){
+        const xFlowData=[];
+        let yProtocalData=[];
+        const pro1=[];
+        const pro2=[];
+        const pro3=[];
+        for (let i=req.data.length-1;i>-1;i--){
+          yProtocalData=req.data[0].protocol;
+          const day=moment(Number(req.data[i].time)).format('MM-DD HH:mm:ss');
+          xFlowData.push(day);
+          pro1.push(req.data[i].size[0]);
+          pro2.push(req.data[i].size[1]);
+          pro3.push(req.data[i].size[2])
         }
-        this.SrcPortOption = {
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow'
-            }
+        this.myChartFlow.setOption({
+          legend: {
+            data:yProtocalData,
           },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'category',
-            data:xSrcDataPort,
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#528B8B',
-              }
-            },
-            axisLabel: {
-              color: '#528B8B'
-            }
-
-          },
-          yAxis: {
-            name:'数量',
-            type: 'value',
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#528B8B',
-              }
-            },
-          },
-          series: [
+          xAxis : [
             {
-              name: '访问次数',
-              type: 'bar',
-              data: ySrcDataNumber,
-              stack: '访问次数',
-              color:'#528B8B'
+              data: xFlowData
+            }
+          ],
+          series : [
+            {
+              name:'DNS',
+              type:'bar',
+              stack: '协议',
+              data:pro1
             },
+            {
+              name:'HTTP',
+              type:'bar',
+              stack: '协议',
+              data:pro2
+            },
+            {
+              name:'UNKNOUW',
+              type:'bar',
+              stack: '协议',
+              data:pro3
+            }
           ]
-        };
-
+        });
       }
+      this.myChartFlow.hideLoading();
     });
   }
-  //恶意目的端口
+  // 恶意源端口柱状图加载
+  SrcPortTopSelectSet(){
+    this.myChartSrc = echarts.init(this.SrcPort.nativeElement);
+    this.myChartSrc.setOption({
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data:[],
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#528B8B',
+          }
+        },
+        axisLabel: {
+          color: '#528B8B'
+        }
+
+      },
+      yAxis: {
+        name:'数量',
+        type: 'value',
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#528B8B',
+          }
+        },
+      },
+      series: [
+        {
+          name: '访问次数',
+          type: 'bar',
+          data: [],
+          stack: '访问次数',
+          color:'#528B8B'
+        },
+      ]
+    });
+    const params={
+      top: this.SrcPortTopSelect,
+    };
+    this.myChartSrc.showLoading();
+    this.http.get(environment.PUBLIC_URL+'/trojan/view/srcPort',params).subscribe((req:any)=> {
+      if(req.data != null) {
+        console.log();
+          const ySrcDataNumber = [];
+          const xSrcDataPort = [];
+          for (const i of req.data) {
+            ySrcDataNumber.push(i.number);
+            xSrcDataPort.push(i.port);
+          }
+          this.myChartSrc.setOption({
+            xAxis: {
+              data:xSrcDataPort,
+            },
+            series: [
+              {
+                data: ySrcDataNumber,
+              },
+            ]
+          });
+      }
+      this.myChartSrc.hideLoading();
+    });
+  }
+  // 恶意目的端口柱状图加载
   DesPortTopSelectSet(){
+    this.myChartDes = echarts.init(this.DesPort.nativeElement);
+    this.myChartDes.setOption({
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+        left: '2%',
+        right: '3%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data:[],
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#7D9EC0',
+          }
+        },
+        axisLabel: {
+          color: '#7D9EC0'
+        }
+
+      },
+      yAxis: {
+        name:'访问次数',
+        type: 'value',
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#7D9EC0',
+          }
+        },
+      },
+      series: [
+        {
+          name: '访问次数',
+          type: 'bar',
+          data: [],
+          stack: '访问次数',
+          color:'#7D9EC0'
+        },
+      ]
+    });
+    this.myChartDes.showLoading();
     const params={
       top:this.DesPortTopSelect,
     };
-    this.http.get(environment.PUBLIC_URL+'/trojan/view/desPort',params).subscribe((req:any[])=> {
-      if (req['data'] != null) {
-        console.log(req['data']);
-        let yDesDataNumber = [];
-         let xDesDataPort = [];
-        for (let i = 0; i < req['data'].length; i++) {
-          yDesDataNumber.push(req['data'][i]['number']);
-          xDesDataPort.push(req['data'][i]['port']);
+    this.http.get(environment.PUBLIC_URL+'/trojan/view/desPort',params).subscribe((req:any)=> {
+      if (req.data != null) {
+        console.log();
+        const yDesDataNumber = [];
+        const xDesDataPort = [];
+        for (const i of req.data) {
+          yDesDataNumber.push(i.number);
+          xDesDataPort.push(i.port);
         }
-        this.DesPortOption = {
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow'
-            }
-          },
-          grid: {
-            left: '2%',
-            right: '3%',
-            bottom: '3%',
-            containLabel: true
-          },
+        this.myChartDes.setOption({
           xAxis: {
-            type: 'category',
             data:xDesDataPort,
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#7D9EC0',
-              }
-            },
-            axisLabel: {
-              color: '#7D9EC0'
-            }
-
-          },
-          yAxis: {
-            name:'访问次数',
-            type: 'value',
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#7D9EC0',
-              }
-            },
           },
           series: [
             {
-              name: '访问次数',
-              type: 'bar',
               data: yDesDataNumber,
-              stack: '访问次数',
-              color:'#7D9EC0'
             },
           ]
-        };
-
+        });
       }
+      this.myChartDes.hideLoading();
     });
   }
 }

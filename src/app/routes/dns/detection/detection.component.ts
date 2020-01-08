@@ -13,7 +13,7 @@ import {environment} from "@env/environment";
 })
 export class DnsDetectionComponent implements OnInit {
   listOfDisplayData=[];
-  //总条数
+  // 总条数
 /*  total:number;
   // 当前页码
   pageIndex: number;
@@ -37,15 +37,12 @@ export class DnsDetectionComponent implements OnInit {
       size:this.pageSize,*/
      userId:1
     };
-    this.http.get(environment.PUBLIC_URL+'/dectDns',params).subscribe((req:any[])=>{
-      console.log('======39===',req)
-      if(req['data']!=null){
-        console.log(req['data']);
-        this.listOfDisplayData=req['data'][0]['content'];
-      /*  this.total=req['data'][0]['totalElements'];*/
+    this.http.get(environment.PUBLIC_URL+'/dectDns',params).subscribe((req:any)=>{
+      if(req.data!=null){
+        console.log(req.data);
+        this.listOfDisplayData=req.data[0].content;
       }else{
         this.listOfDisplayData=[];
-      /*  this.total=0;*/
       }
     });
 

@@ -3,20 +3,18 @@
     木马流量视图
   </h1>
 </div>
-<!--<div  nz-row nzGutter="17">-->
   <nz-card [nzTitle]="'流量视图'">
-    <div echarts [options]="FlowOption" class="demo-chart" style="width: 100%"></div>
-    <nz-select [(ngModel)]="FlowSelect" nzSize="small" (ngModelChange)="changeTime()" class="FlowSelect">
+    <div echarts #Flow class="demo-chart" style="width: 100%;height: 300px;"></div>
+    <nz-select [(ngModel)]="FlowSelect" nzSize="small" (ngModelChange)="changeTime('flow')" class="FlowSelect">
       <nz-option *ngFor="let option of FlowOptionsDate" [nzLabel]="option.name" [nzValue]="option.id">
       </nz-option>
     </nz-select>
   </nz-card>
-<!--</div>-->
 <div nz-row nzGutter="16">
   <div nz-col nzSpan="12">
     <nz-card [nzTitle]="'恶意源端口'">
-      <div echarts [options]="SrcPortOption" class="demo-chart" style="width: 100%"></div>
-      <nz-select [(ngModel)]="SrcPortTopSelect" nzSize="small" (ngModelChange)="SrcPortTopSelectSet()"
+      <div echarts #SrcPort class="demo-chart" style="width: 100%;height: 300px;"></div>
+      <nz-select [(ngModel)]="SrcPortTopSelect" nzSize="small" (ngModelChange)="changeTime('SrcPort')"
                  class="TopSelect">
         <nz-option *ngFor="let option of SrcPortTopOptions" [nzLabel]="option.name" [nzValue]="option.id">
         </nz-option>
@@ -24,9 +22,9 @@
     </nz-card>
   </div>
   <div nz-col nzSpan="12">
-    <nz-card [nzTitle]="'恶意目的IP'">
-      <div echarts [options]="DesPortOption" class="demo-chart" style="width: 100%"></div>
-      <nz-select [(ngModel)]="DesPortTopSelect" nzSize="small" (ngModelChange)="DesPortTopSelectSet()"
+    <nz-card [nzTitle]="'恶意目的端口'">
+      <div echarts #DesPort class="demo-chart" style="width: 100%;height: 300px;"></div>
+      <nz-select [(ngModel)]="DesPortTopSelect" nzSize="small" (ngModelChange)="changeTime('DesIp')"
                  class="TopSelect">
         <nz-option *ngFor="let option of DesPortTopOptions" [nzLabel]="option.name" [nzValue]="option.id">
         </nz-option>
