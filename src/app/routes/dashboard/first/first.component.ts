@@ -2688,7 +2688,8 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
         const yDetectFlowData=[];
         const xDetectFlowData=[];
         for (const i of req.data){
-          yDetectFlowData.push(i.flowNum/1048576);
+          var num=i.flowNum/1048576;
+          yDetectFlowData.push(num.toFixed(2));
           const day=moment(Number(i.time)).format('MM-DD HH:mm:ss');
           xDetectFlowData.push(day);
         }
