@@ -20,8 +20,12 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
   @ViewChild('FlowOption',{static:true}) FlowOption:ElementRef;
   myChartFlow:any;
  /* 木马IP统计*/
-/*  @ViewChild('TriIPTotal',{static:true}) TriIPTotal:ElementRef;
-  myChartTriIPOption:any;*/
+  @ViewChild('TriIPTotal',{static:true}) TriIPTotal:ElementRef;
+  myChartTriIPOption:any;
+  /*DNSIP统计*/
+  @ViewChild('DnsIPTotal',{static:true}) DnsIPTotal:ElementRef;
+  myChartDNSIPOption:any;
+
  /* 威胁等级饼图*/
   @ViewChild('DnsBar',{static:true}) DnsBar:ElementRef;
   myChartDnsOption:any;
@@ -37,16 +41,12 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
    handledNum:number;
    threatNum:number;
   time:string;
-  srcIP:string;
+/*  srcIP:string;
   desIP:string;
   type:string;
-  info:string;
-  IPOption:any;
-  DnsIPOption:any;
+  info:string;*/
   /*地图*/
   MapOption:any;
-  /*滑动标签*/
-  tabIndex:number;
   constructor(
     private el: ElementRef,
     private renderer2: Renderer2,
@@ -64,8 +64,6 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
     this.getDns();
     /* 威胁等级堆叠图*/
     this.getThrenOption();
-    /*滑动面板*/
-    this.tabIndex=0;
     /*木马IP统计*/
     this.TopSelectSet();
    /* DnsIP统计*/
@@ -75,131 +73,10 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
   }
     ngOnInit():void{
   }
-  test1(){
-    if(this.tabIndex===0){
-      this.TopSelectSet();
-    }else{
-      this.DnsTopSelectSet();
-    }
-  }
   /*地图*/
   getDitu(){
-  /*  this.myChartMapOption = echarts.init(this.MapChain.nativeElement);
-    this.myChartMapOption.setOption({
-      title : {
-        text: 'IP攻击实时监控',
-        subtext: '',
-        left: 'center',
-        textStyle: {
-          fontSize: '24',
-        },
-      },
-      geo: {    /!*地理坐标系*!/
-        map: 'china',      /!*地图类型。world世界地图，china中国地图*!/
-        label: {
-          emphasis: {  /!* 是否在高亮状态下显示标签。*!/
-            show: false
-          }
-        },
-        zoom:1.25,      /!*当前视角的缩放比例,即地图的大小*!/
-        roam: true,  /!*是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启*!/
-        /!* silent: true,*!/  /!*图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件。*!/
-        itemStyle: {    /!*地图区域的多边形 图形样式*!/
-          normal: {
-            /!*areaColor:'#27408B',*!/
-            areaColor: { // 地图区域的颜色
-              type: 'radial', // 径向渐变
-              x: 0.5, // 圆心 x,y
-              y: 0.5,
-              r: 0.8, // 半径
-              colorStops: [{
-                offset: 0,
-                color: '#4682B4' // 0% 处的颜色
-              }, {
-                offset: 1,
-                color: '#36648B' // 100% 处的颜色
-              }],
-              globalCoord: false // 缺省为 false
-            },
-            /!* borderColor: '#FFFFFF'*!/
-            borderColor: 'rgba(147, 235, 248, 1)', // 图形的描边颜色
-            borderWidth: 1, // 描边宽度 0表示无描边
-            shadowColor: 'rgba(128, 217, 248, 1)', // 阴影颜色
-            shadowOffsetX: -2, /!*阴影水平方向上的偏移距离。*!/
-            shadowOffsetY: 2, /!*阴影垂直方向上的偏移距离。*!/
-            shadowBlur: 10 // 图形阴影的模糊大小
-          },
-          emphasis: {
-            areaColor: '#2a333d',
-            borderWidth: 0
-          }
-        },
-        /!* layoutSize:300*!/
-      },
-      series: [{   /!*北京到各地区*!/
-        type: 'lines',
-        zlevel: 4,
-        effect: {
-          show: true,
-          period: 6,
-          trailLength: 0.1,
-          color: '#DEB887',
-          symbol: 'arrow',   /!*图形 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'*!/
-          symbolSize: 20   /!*标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。*!/
-        },
-        lineStyle: {
-          normal: {
-            color: '#f89801',
-            width: 1,
-            opacity: 0.4,    /!*图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形*!/
-            curveness: 0.2
-          }
-        },
-        data: []
-      }, {
-        type: 'effectScatter',   /!*特效散点图*!/
-        coordinateSystem: 'geo', /!* 'cartesian2d'使用二维的直角坐标系。'geo'使用地理坐标系*!/
-        zlevel: 4,          /!*柱状图所有图形的zlevel值*!/
-        rippleEffect: {   /!*涟漪特效相关配置。*!/
-          period: 4,
-          scale: 2.5,    /!*动画中波纹的最大缩放比例。*!/
-          brushType: 'stroke'    /!*波纹的绘制方式，可选 'stroke' 和 'fill'。*!/
-        },
-        label: {    /!* 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，*!/
-          normal: {
-            show: true,
-            position: 'right',
-            formatter: '{b}'
-          }
-        },
-        symbolSize: 13,
-        itemStyle: {
-          normal: {
-            color: '#000000',
-            borderColor: '#323c48'
-          }
-        },
-        data: []
-      }
-      ],
-      tooltip: {
-        trigger: 'item',
-        formatter:(p)=>{
-          const dataCon = p.data;
-          if (dataCon.warn !== undefined) {
-            const ip = dataCon.warn.split(',');
-            let s = `${dataCon.name}</br>IP:`;
-            for (const i of ip) {
-              s +=  `</br>${i}`
-            }
-            return s
-          }
-          else if(dataCon.name !== undefined){
-            return `${dataCon.name}`
-          }
-        }
-      }
-    });*/
+  /*  console.log(this.MapChain.nativeElement)
+    this.myChartMapOption = echarts.init(this.MapChain.nativeElement);*/
     const geoCoordMap = {
       '北京': [116.46,39.92],
       '平谷': [117.1,40.13],
@@ -738,7 +615,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '厦门': [118.1,24.46],
       '同安': [118.15,24.74],
       '南平': [118.16,26.65],
-    /*  '南平': [118.11,27.34],*/
+      /*  '南平': [118.11,27.34],*/
       '建瓯': [118.32,27.05],
       '浦城': [118.55,27.92],
       '邵武': [117.48,27.34],
@@ -944,7 +821,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '延津': [114.19,35.14],
       '原阳': [113.96,35.05],
       '武陟': [113.38,35.1],
-   /*   '孟县': [112.77,34.92],*/
+      /*   '孟县': [112.77,34.92],*/
       '沁阳': [112.92,35.08],
       '修武': [113.42,35.24],
       '安阳': [114.35,36.1],
@@ -1114,7 +991,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '常宁': [112.39,26.38],
       '祁阳': [111.85,26.59],
       '祁东': [112.14,26.8],
-     /* '衡阳': [112.39,26.98],*/
+      /* '衡阳': [112.39,26.98],*/
       '永州': [111.63,26.22],
       '零陵': [111.63,26.22],
       '新田': [112.21,25.91],
@@ -1184,7 +1061,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '番禺': [113.36,22.95],
       '海口': [110.35,20.02],
       '汕头': [116.69,23.39],
-     /* '洪江': [110.38,21.2],*/
+      /* '洪江': [110.38,21.2],*/
       '茂名': [110.88,21.68],
       '佛山': [113.11,23.05],
       '江门': [113.06,22.61],
@@ -1268,7 +1145,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '郁南': [111.51,23.23],
       '德庆': [111.75,23.15],
       '封开': [111.48,23.45],
-     /* '海口': [110.35,20.02],*/
+      /* '海口': [110.35,20.02],*/
       '琼山': [110.33,19.98],
       '文昌': [110.72,19.61],
       '定安': [110.31,19.68],
@@ -1942,7 +1819,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '和政': [103.31,35.43],
       '康乐': [103.68,35.39],
       '广河': [103.54,35.46],
-     /* '东乡': [103.39,35.68],*/
+      /* '东乡': [103.39,35.68],*/
       '岷县': [104.04,34.41],
       '积石山': [102.85,35.74],
       '武威': [102.61,37.94],
@@ -2408,7 +2285,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '邳县': [117.97,34.3],
       '睢宁': [117.94,33.89],
       '铜山': [117.2,34.26],
-    /*  '清江': [119.02,33.59],*/
+      /*  '清江': [119.02,33.59],*/
       '灌云': [119.23,34.3],
       '灌南': [119.36,34.09],
       '沭阳': [118.79,34.12],
@@ -2464,7 +2341,122 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '吴县': [120.62,31.32],
       '吴江': [120.63,31.16]
     };
-  /*  this.myChartMapOption.showLoading();*/
+   /* this.myChartMapOption.setOption({
+      title : {
+        text: 'IP攻击实时监控',
+        subtext: '',
+        left: 'center',
+        textStyle: {
+          fontSize: '24',
+        },
+      },
+      geo: {    /!*地理坐标系*!/
+        map: 'china',      /!*地图类型。world世界地图，china中国地图*!/
+        label: {
+          emphasis: {  /!* 是否在高亮状态下显示标签。*!/
+            show: false
+          }
+        },
+        zoom:1.25,      /!*当前视角的缩放比例,即地图的大小*!/
+        roam: true,  /!*是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启*!/
+        /!* silent: true,*!/  /!*图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件。*!/
+        itemStyle: {    /!*地图区域的多边形 图形样式*!/
+          normal: {
+            /!*areaColor:'#27408B',*!/
+            areaColor: { // 地图区域的颜色
+              type: 'radial', // 径向渐变
+              x: 0.5, // 圆心 x,y
+              y: 0.5,
+              r: 0.8, // 半径
+              colorStops: [{
+                offset: 0,
+                color: '#4682B4' // 0% 处的颜色
+              }, {
+                offset: 1,
+                color: '#36648B' // 100% 处的颜色
+              }],
+              globalCoord: false // 缺省为 false
+            },
+            /!* borderColor: '#FFFFFF'*!/
+            borderColor: 'rgba(147, 235, 248, 1)', // 图形的描边颜色
+            borderWidth: 1, // 描边宽度 0表示无描边
+            shadowColor: 'rgba(128, 217, 248, 1)', // 阴影颜色
+            shadowOffsetX: -2, /!*阴影水平方向上的偏移距离。*!/
+            shadowOffsetY: 2, /!*阴影垂直方向上的偏移距离。*!/
+            shadowBlur: 10 // 图形阴影的模糊大小
+          },
+          emphasis: {
+            areaColor: '#2a333d',
+            borderWidth: 0
+          }
+        },
+        /!* layoutSize:300*!/
+      },
+      series: [{   /!*北京到各地区*!/
+        type: 'lines',
+        zlevel: 4,
+        effect: {
+         show: true,
+         period: 6,
+         trailLength: 0.1,
+         color: '#DEB887',
+         symbol: 'arrow',   /!*图形 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'*!/
+         symbolSize: 20   /!*标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。*!/
+       },
+       lineStyle: {
+         normal: {
+           color: '#f89801',
+           width: 1,
+           opacity: 0.4,    /!*图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形*!/
+           curveness: 0.2
+         }
+       },
+        data: []
+      }, {
+        type: 'effectScatter', /!* 特效散点图*!/
+        coordinateSystem: 'geo', /!* 'cartesian2d'使用二维的直角坐标系。'geo'使用地理坐标系*!/
+        zlevel: 4,          /!*柱状图所有图形的zlevel值*!/
+        rippleEffect: {   /!*涟漪特效相关配置。*!/
+          period: 4,
+          scale: 2.5,    /!*动画中波纹的最大缩放比例。*!/
+          brushType: 'stroke'    /!*波纹的绘制方式，可选 'stroke' 和 'fill'。*!/
+        },
+        label: {    /!* 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，*!/
+          normal: {
+            show: true,
+            position: 'right',
+            formatter: '{b}'
+          }
+        },
+        symbolSize: 13,
+        itemStyle: {
+          normal: {
+            color: '#000000',
+            borderColor: '#323c48'
+          }
+        },
+        data: []
+      }
+      ],
+      tooltip: {
+        trigger: 'item',
+        formatter:(p)=>{
+          const dataCon = p.data;
+          if (dataCon.warn !== undefined) {
+            const ip = dataCon.warn.split(',');
+            let s = `${dataCon.name}</br>IP:`;
+            for (const i of ip) {
+              s +=  `</br>${i}`
+            }
+            return s
+          }
+          else if(dataCon.name !== undefined){
+            return `${dataCon.name}`
+          }
+        }
+      }
+    });
+    this.myChartMapOption.showLoading();*/
     this.http.get(environment.PUBLIC_URL+'/info/ipAddress').subscribe((req:any)=>{
         function formtGCData(geoData, data, srcNam, dest) {
           const tGeoDt = [];
@@ -2541,121 +2533,121 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
           });
           return tGeoDt;
         }
-        this.MapOption={
-          title : {
-            text: 'IP攻击实时监控',
-            subtext: '',
-            left: 'center',
-            textStyle: {
-              fontSize: '24',
-            },
-          },
-          geo: {    /*地理坐标系*/
-            map: 'china',      /*地图类型。world世界地图，china中国地图*/
-            label: {
-              emphasis: {  /* 是否在高亮状态下显示标签。*/
-                show: false
-              }
-            },
-            zoom:1.25,      /*当前视角的缩放比例,即地图的大小*/
-            roam: true,  /*是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启*/
-            /* silent: true,*/  /*图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件。*/
-            itemStyle: {    /*地图区域的多边形 图形样式*/
-              normal: {
-                areaColor: { // 地图区域的颜色
-                  type: 'radial', // 径向渐变
-                  x: 0.5, // 圆心 x,y
-                  y: 0.5,
-                  r: 0.8, // 半径
-                  colorStops: [{
-                    offset: 0,
-                    color: '#4682B4' // 0% 处的颜色
-                  }, {
-                    offset: 1,
-                    color: '#36648B' // 100% 处的颜色
-                  }],
-                  globalCoord: false // 缺省为 false
+      /*  if(req.data!=null){*/
+          this.MapOption={
+              title : {
+                text: 'IP攻击实时监控',
+                subtext: '',
+                left: 'center',
+                textStyle: {
+                  fontSize: '24',
                 },
-                /* borderColor: '#FFFFFF'*/
-                borderColor: 'rgba(147, 235, 248, 1)', // 图形的描边颜色
-                borderWidth: 1, // 描边宽度 0表示无描边
-                shadowColor: 'rgba(128, 217, 248, 1)', // 阴影颜色
-                shadowOffsetX: -2, /*阴影水平方向上的偏移距离。*/
-                shadowOffsetY: 2, /*阴影垂直方向上的偏移距离。*/
-                shadowBlur: 10 // 图形阴影的模糊大小
               },
-              emphasis: {
-                areaColor: '#2a333d',
-                borderWidth: 0
-              }
-            },
-          },
-          series: [{   /*北京到各地区*/
-            type: 'lines',
-            zlevel: 4,
-            effect: {
-              show: true,
-              period: 6,
-              trailLength: 0.1,
-              color: '#DEB887',
-              symbol: 'arrow',   /*图形 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'*/
-              symbolSize: 20   /*标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。*/
-            },
-            lineStyle: {
-              normal: {
-                color: '#f89801',
-                width: 1,
-                opacity: 0.4,    /*图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形*/
-                curveness: 0.2
-              }
-            },
-            data: formtGCData(geoCoordMap,  req.data, '北京', true)
-          }, {
-
-            type: 'effectScatter',   /*特效散点图*/
-            coordinateSystem: 'geo', /* 'cartesian2d'使用二维的直角坐标系。'geo'使用地理坐标系*/
-            zlevel: 4,          /*柱状图所有图形的zlevel值*/
-            rippleEffect: {   /*涟漪特效相关配置。*/
-              period: 4,
-              scale: 2.5,    /*动画中波纹的最大缩放比例。*/
-              brushType: 'stroke'    /*波纹的绘制方式，可选 'stroke' 和 'fill'。*/
-            },
-            label: {    /* 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，*/
-              normal: {
-                show: true,
-                position: 'right',
-                formatter: '{b}'
-              }
-            },
-            symbolSize: 13,
-            itemStyle: {
-              normal: {
-                color: '#000000',
-                borderColor: '#323c48'
-              }
-            },
-
-            data: formtVData(geoCoordMap,  req.data, '北京')
-          }
-          ],
-          tooltip: {
-            trigger: 'item',
-            formatter:(p)=>{
-              const dataCon = p.data;
-              if (dataCon.warn !== undefined) {
-                const ip = dataCon.warn.split(',');
-                let s = `${dataCon.name}</br>IP:`;
-                for (const i of ip) {
-                  s +=  `</br>${i}`
+              geo: {    /*地理坐标系*/
+                map: 'china',      /*地图类型。world世界地图，china中国地图*/
+                label: {
+                  emphasis: {  /* 是否在高亮状态下显示标签。*/
+                    show: false
+                  }
+                },
+                zoom:1.25,      /*当前视角的缩放比例,即地图的大小*/
+                roam: true,  /*是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启*/
+                /* silent: true,*/  /*图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件。*/
+                itemStyle: {    /*地图区域的多边形 图形样式*/
+                  normal: {
+                    areaColor: { // 地图区域的颜色
+                      type: 'radial', // 径向渐变
+                      x: 0.5, // 圆心 x,y
+                      y: 0.5,
+                      r: 0.8, // 半径
+                      colorStops: [{
+                        offset: 0,
+                        color: '#4682B4' // 0% 处的颜色
+                      }, {
+                        offset: 1,
+                        color: '#36648B' // 100% 处的颜色
+                      }],
+                      globalCoord: false // 缺省为 false
+                    },
+                    /* borderColor: '#FFFFFF'*/
+                    borderColor: 'rgba(147, 235, 248, 1)', // 图形的描边颜色
+                    borderWidth: 1, // 描边宽度 0表示无描边
+                    shadowColor: 'rgba(128, 217, 248, 1)', // 阴影颜色
+                    shadowOffsetX: -2, /*阴影水平方向上的偏移距离。*/
+                    shadowOffsetY: 2, /*阴影垂直方向上的偏移距离。*/
+                    shadowBlur: 10 // 图形阴影的模糊大小
+                  },
+                  emphasis: {
+                    areaColor: '#2a333d',
+                    borderWidth: 0
+                  }
+                },
+              },
+            series: [{   /*北京到各地区*/
+               type: 'lines',
+               zlevel: 4,
+               effect: {
+                 show: true,
+                 period: 6,
+                 trailLength: 0.1,
+                 color: '#DEB887',
+                 symbol: 'arrow',   /*图形 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'*/
+                 symbolSize: 20   /*标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。*/
+               },
+               lineStyle: {
+                 normal: {
+                   color: '#f89801',
+                   width: 1,
+                   opacity: 0.4,    /*图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形*/
+                   curveness: 0.2
+                 }
+               },
+              data: formtGCData(geoCoordMap,  req.data, '北京', true)
+            }, {
+                type: 'effectScatter',   /*特效散点图*/
+                coordinateSystem: 'geo', /* 'cartesian2d'使用二维的直角坐标系。'geo'使用地理坐标系*/
+                zlevel: 4,          /*柱状图所有图形的zlevel值*/
+                rippleEffect: {   /*涟漪特效相关配置。*/
+                  period: 4,
+                  scale: 2.5,    /*动画中波纹的最大缩放比例。*/
+                  brushType: 'stroke'    /*波纹的绘制方式，可选 'stroke' 和 'fill'。*/
+                },
+                label: {    /* 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，*/
+                  normal: {
+                    show: true,
+                    position: 'right',
+                    formatter: '{b}'
+                  }
+                },
+                symbolSize: 13,
+                itemStyle: {
+                  normal: {
+                    color: '#000000',
+                    borderColor: '#323c48'
+                  }
+                },
+              data: formtVData(geoCoordMap,  req.data, '北京')
+            }
+            ],
+            tooltip: {
+              trigger: 'item',
+              formatter:(p)=>{
+                const dataCon = p.data;
+                if (dataCon.warn !== undefined) {
+                  const ip = dataCon.warn.split(',');
+                  let s = `${dataCon.name}</br>IP:`;
+                  for (const i of ip) {
+                    s +=  `</br>${i}`
+                  }
+                  return s
+                } else if(dataCon.name !== undefined){
+                  return `${dataCon.name}`
                 }
-                return s
-              } else if(dataCon.name !== undefined){
-                return `${dataCon.name}`
               }
             }
-          }
-        };
-       /* this.myChartMapOption.hideLoading();*/
+          };
+      /*  }*/
+      /*  this.myChartMapOption.hideLoading();*/
     });
   }
   /*获取警告数据*/
@@ -2833,6 +2825,160 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       this.myChartFlow.hideLoading();
     });
   }
+  /*获取木马ip访问统计排名*/
+  TopSelectSet(){
+    this.myChartTriIPOption = echarts.init(this.TriIPTotal.nativeElement);
+    this.myChartTriIPOption.setOption({
+      title:{
+        text: '木马IP统计'
+      },
+      color: ['#CD2626'],
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#CD2626',
+          }
+        },
+      },
+      yAxis: {
+        type: 'category', /* 决定显示横柱形还是竖柱形*/
+        name: 'ip',
+        data: [],
+        splitLine: {
+          show: false
+        },
+        axisLabel: {
+          color: '#CD2626'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#CD2626',
+          }
+        },
+      },
+      series: [{
+        name:'访问次数',
+        data: [],
+        type: 'bar',
+      }]
+    });
+    this.myChartTriIPOption.showLoading();
+    const params={
+      n:10,
+    };
+    this.http.get(environment.PUBLIC_URL+'/info/trojanIpCount',params).subscribe((req:any)=>{
+      if(req.data!=null){
+        const xData=[];
+        const yData=[];
+        for(const i of req.data){
+          yData.push(i.ip);
+          xData.push(i.countnumber)
+        }
+        this.myChartTriIPOption.setOption({
+          yAxis: {
+            data: yData.reverse(),
+          },
+          series: [{
+            data: xData.reverse(),
+          }]
+        });
+      }
+      this.myChartTriIPOption.hideLoading();
+    });
+  }
+  /* dnsIP 访问统计*/
+  DnsTopSelectSet(){
+    this.myChartDNSIPOption = echarts.init(this.DnsIPTotal.nativeElement);
+    this.myChartDNSIPOption.setOption({
+      title:{
+        text: 'DNSIP统计'
+      },
+      color: ['#CD2626'],
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#CD2626',
+          }
+        },
+      },
+      yAxis: {
+        type: 'category',
+        name: 'ip',
+        data: [],
+        splitLine: {
+          show: false
+        },
+        axisLabel: {
+          color: '#CD2626'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#CD2626',
+          }
+        },
+      },
+      series: [{
+        name:'访问次数',
+        data: [],
+        type: 'bar',
+      }]
+    });
+    this.myChartDNSIPOption.showLoading();
+    const params={
+      n:10,
+    };
+    this.http.get(environment.PUBLIC_URL+'/info/dnsIpCount',params).subscribe((req:any)=>{
+      if(req.data!=null){
+        const xData=[];
+        const yData=[];
+        for(const i of req.data){
+          yData.push(i.ip);
+          xData.push(i.countnumber)
+        }
+        this.myChartDNSIPOption.setOption({
+          yAxis: {
+            data: yData.reverse(),
+          },
+          series: [{
+            data: xData.reverse(),
+          }]
+        });
+      }
+      this.myChartDNSIPOption.hideLoading();
+    });
+  }
  /* 威胁等级饼图等级*/
   getDns(){
     this.myChartDnsOption = echarts.init(this.DnsBar.nativeElement);
@@ -3002,132 +3148,6 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
         })
       }
       this.myChartThrenOption.hideLoading();
-    });
-  }
-  /*获取木马ip访问统计排名*/
-  TopSelectSet(){
-    const params={
-      n:10,
-    };
-    this.http.get(environment.PUBLIC_URL+'/info/trojanIpCount',params).subscribe((req:any)=>{
-      if(req.data!=null){
-        const xData=[];
-        const yData=[];
-        for(const i of req.data){
-          yData.push(i.ip);
-          xData.push(i.countnumber)
-        }
-        this.IPOption = {
-          color: ['#CD2626'],
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow'
-            }
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'value',
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#CD2626',
-              }
-            },
-          },
-          yAxis: {
-            type: 'category', /* 决定显示横柱形还是竖柱形*/
-            name: 'ip',
-            data: yData.reverse(),
-            splitLine: {
-              show: false
-            },
-            axisLabel: {
-              color: '#CD2626'
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#CD2626',
-              }
-            },
-          },
-          series: [{
-            name:'访问次数',
-            data: xData.reverse(),
-            type: 'bar',
-          }]
-        };
-      }
-    });
-  }
- /* dnsIP 访问统计*/
-  DnsTopSelectSet(){
-    const params={
-      n:10,
-    };
-    this.http.get(environment.PUBLIC_URL+'/info/dnsIpCount',params).subscribe((req:any)=>{
-      if(req.data!=null){
-        const xData=[];
-        const yData=[];
-        for(const i of req.data){
-          yData.push(i.ip);
-          xData.push(i.countnumber)
-        }
-        this.DnsIPOption = {
-          color: ['#CD2626'],
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow'
-            }
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'value',
-            splitLine: {
-              show: false
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#CD2626',
-              }
-            },
-          },
-          yAxis: {
-            type: 'category',
-            name: 'ip',
-            data: yData.reverse(),
-            splitLine: {
-              show: false
-            },
-            axisLabel: {
-              color: '#CD2626'
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#CD2626',
-              }
-            },
-          },
-          series: [{
-            name:'访问次数',
-            data: xData.reverse(),
-            type: 'bar',
-          }]
-        };
-      }
     });
   }
 
