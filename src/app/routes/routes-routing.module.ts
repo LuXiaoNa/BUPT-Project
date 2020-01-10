@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SimpleGuard } from '@delon/auth';
 import { environment } from '@env/environment';
 // layout
 import { LayoutDefaultComponent } from '../layout/default/default.component';
@@ -8,9 +7,9 @@ import { LayoutFullScreenComponent } from '../layout/fullscreen/fullscreen.compo
 import { LayoutPassportComponent } from '../layout/passport/passport.component';
 // dashboard pages
 import { DashboardFirstComponent } from './dashboard/first/first.component';
-import { DashboardAnalysisComponent } from './dashboard/analysis/analysis.component';
+/*import { DashboardAnalysisComponent } from './dashboard/analysis/analysis.component';
 import { DashboardMonitorComponent } from './dashboard/monitor/monitor.component';
-import { DashboardWorkplaceComponent } from './dashboard/workplace/workplace.component';
+import { DashboardWorkplaceComponent } from './dashboard/workplace/workplace.component';*/
 // passport pages
 import { UserLoginComponent } from './passport/login/login.component';
 import { UserRegisterComponent } from './passport/register/register.component';
@@ -23,25 +22,18 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutDefaultComponent,
-    canActivate: [SimpleGuard],
-    canActivateChild: [SimpleGuard],
+/*    canActivate: [SimpleGuard],
+    canActivateChild: [SimpleGuard],*/
     children: [
       { path: '', redirectTo: 'dashboard/first', pathMatch: 'full' },
       { path: 'dashboard', redirectTo: 'dashboard/first', pathMatch: 'full' },
       { path: 'dashboard/first', component: DashboardFirstComponent },
-      { path: 'dashboard/analysis', component: DashboardAnalysisComponent },
+    /*  { path: 'dashboard/analysis', component: DashboardAnalysisComponent },
       { path: 'dashboard/monitor', component: DashboardMonitorComponent },
-      { path: 'dashboard/workplace', component: DashboardWorkplaceComponent },
-      {
-        path: 'widgets',
-        loadChildren: () => import('./widgets/widgets.module').then(m => m.WidgetsModule),
-      },
-      { path: 'style', loadChildren: () => import('./style/style.module').then(m => m.StyleModule) },
-      { path: 'delon', loadChildren: () => import('./delon/delon.module').then(m => m.DelonModule) },
+      { path: 'dashboard/workplace', component: DashboardWorkplaceComponent },*/
       { path: 'horse', loadChildren: () => import('./horse/horse.module').then(m => m.HorseModule) },
       {path:'dns', loadChildren: () => import('./dns/dns.module').then(m=>m.DnsModule)},
       { path: 'extras', loadChildren: () => import('./extras/extras.module').then(m => m.ExtrasModule) },
-      { path: 'pro', loadChildren: () => import('./pro/pro.module').then(m => m.ProModule) },
       // Exception
       { path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule) },
     ],

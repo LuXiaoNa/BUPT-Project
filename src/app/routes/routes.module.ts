@@ -4,9 +4,6 @@ import { SharedModule } from '@shared';
 import { RouteRoutingModule } from './routes-routing.module';
 // dashboard pages
 import { DashboardFirstComponent } from './dashboard/first/first.component';
-import { DashboardAnalysisComponent } from './dashboard/analysis/analysis.component';
-import { DashboardMonitorComponent } from './dashboard/monitor/monitor.component';
-import { DashboardWorkplaceComponent } from './dashboard/workplace/workplace.component';
 // passport pages
 import { UserLoginComponent } from './passport/login/login.component';
 import { UserRegisterComponent } from './passport/register/register.component';
@@ -19,9 +16,6 @@ import {AbmModule} from "angular-baidu-maps";
 
 const COMPONENTS = [
   DashboardFirstComponent,
-  DashboardAnalysisComponent,
-  DashboardMonitorComponent,
-  DashboardWorkplaceComponent,
   // passport pages
   UserLoginComponent,
   UserRegisterComponent,

@@ -2574,7 +2574,7 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
         }
       },
       yAxis: {
-        name: '数量(个)',
+        name: '数量(万个)',
         type: 'value',
         splitLine: {
           show: false
