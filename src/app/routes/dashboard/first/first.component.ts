@@ -25,7 +25,6 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
   /*DNSIP统计*/
   @ViewChild('DnsIPTotal',{static:true}) DnsIPTotal:ElementRef;
   myChartDNSIPOption:any;
-
  /* 威胁等级饼图*/
   @ViewChild('DnsBar',{static:true}) DnsBar:ElementRef;
   myChartDnsOption:any;
@@ -33,20 +32,13 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
   @ViewChild('ThrenOption',{static:true}) ThrenOption:ElementRef;
   myChartThrenOption:any;
  /* 地图*/
-/*  @ViewChild('MapChain',{static:true}) MapChain:ElementRef;
-  myChartMapOption:any;*/
-
+  @ViewChild('MapChain',{static:true}) MapChain:ElementRef;
+  myChartMapOption:any;
  /* 影响警告分布数据图*/
    notHandleNum:number;
    handledNum:number;
    threatNum:number;
   time:string;
-/*  srcIP:string;
-  desIP:string;
-  type:string;
-  info:string;*/
-  /*地图*/
-  MapOption:any;
   constructor(
     private el: ElementRef,
     private renderer2: Renderer2,
@@ -75,8 +67,119 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
   }
   /*地图*/
   getDitu(){
-  /*  console.log(this.MapChain.nativeElement)
-    this.myChartMapOption = echarts.init(this.MapChain.nativeElement);*/
+    this.myChartMapOption = echarts.init(this.MapChain.nativeElement);
+    this.myChartMapOption.setOption({
+      title : {
+        text: 'IP攻击实时监控',
+        subtext: '',
+        left: 'center',
+        textStyle: {
+          fontSize: '24',
+        },
+      },
+      geo: {    /*地理坐标系*/
+        map: 'china',      /*地图类型。world世界地图，china中国地图*/
+        label: {
+          emphasis: {  /* 是否在高亮状态下显示标签。*/
+            show: false
+          }
+        },
+        zoom:1.25,      /*当前视角的缩放比例,即地图的大小*/
+        roam: true,  /*是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启*/
+        itemStyle: {    /*地图区域的多边形 图形样式*/
+          normal: {
+            areaColor: { // 地图区域的颜色
+              type: 'radial', // 径向渐变
+              x: 0.5, // 圆心 x,y
+              y: 0.5,
+              r: 0.8, // 半径
+              colorStops: [{
+                offset: 0,
+                color: '#4682B4' // 0% 处的颜色
+              }, {
+                offset: 1,
+                color: '#36648B' // 100% 处的颜色
+              }],
+              globalCoord: false // 缺省为 false
+            },
+            borderColor: 'rgba(147, 235, 248, 1)', // 图形的描边颜色
+            borderWidth: 1, // 描边宽度 0表示无描边
+            shadowColor: 'rgba(128, 217, 248, 1)', // 阴影颜色
+            shadowOffsetX: -2, /*阴影水平方向上的偏移距离。*/
+            shadowOffsetY: 2, /*阴影垂直方向上的偏移距离。*/
+            shadowBlur: 10 // 图形阴影的模糊大小
+          },
+          emphasis: {
+            areaColor: '#2a333d',
+            borderWidth: 0
+          }
+        },
+      },
+      series: [{   /*北京到各地区*/
+        type: 'lines',
+        zlevel: 4,
+        effect: {
+         show: true,
+         period: 6,
+         trailLength: 0.1,
+         color: '#DEB887',
+         symbol: 'arrow',   /*图形 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'*/
+         symbolSize: 20   /*标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。*/
+       },
+       lineStyle: {
+         normal: {
+           color: '#f89801',
+           width: 1,
+           opacity: 0.4,    /*图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形*/
+           curveness: 0.2
+         }
+       },
+        data: []
+      }, {
+        type: 'effectScatter', /* 特效散点图*/
+        coordinateSystem: 'geo', /* 'cartesian2d'使用二维的直角坐标系。'geo'使用地理坐标系*/
+        zlevel: 4,          /*柱状图所有图形的zlevel值*/
+        rippleEffect: {   /*涟漪特效相关配置。*/
+          period: 4,
+          scale: 2.5,    /*动画中波纹的最大缩放比例。*/
+          brushType: 'stroke'    /*波纹的绘制方式，可选 'stroke' 和 'fill'。*/
+        },
+        label: {    /* 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，*/
+          normal: {
+            show: true,
+            position: 'right',
+            formatter: '{b}'
+          }
+        },
+        symbolSize: 13,
+        itemStyle: {
+          normal: {
+            color: '#000000',
+            borderColor: '#323c48'
+          }
+        },
+        data: []
+      }
+      ],
+      tooltip: {
+        trigger: 'item',
+        formatter:(p)=>{
+          const dataCon = p.data;
+          if (dataCon.warn !== undefined) {
+            const ip = dataCon.warn.split(',');
+            let s = `${dataCon.name}</br>IP:`;
+            for (const i of ip) {
+              s +=  `</br>${i}`
+            }
+            return s
+          }
+          else if(dataCon.name !== undefined){
+            return `${dataCon.name}`
+          }
+        }
+      }
+    });
+    this.myChartMapOption.showLoading();
     const geoCoordMap = {
       '北京': [116.46,39.92],
       '平谷': [117.1,40.13],
@@ -2341,122 +2444,6 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
       '吴县': [120.62,31.32],
       '吴江': [120.63,31.16]
     };
-   /* this.myChartMapOption.setOption({
-      title : {
-        text: 'IP攻击实时监控',
-        subtext: '',
-        left: 'center',
-        textStyle: {
-          fontSize: '24',
-        },
-      },
-      geo: {    /!*地理坐标系*!/
-        map: 'china',      /!*地图类型。world世界地图，china中国地图*!/
-        label: {
-          emphasis: {  /!* 是否在高亮状态下显示标签。*!/
-            show: false
-          }
-        },
-        zoom:1.25,      /!*当前视角的缩放比例,即地图的大小*!/
-        roam: true,  /!*是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启*!/
-        /!* silent: true,*!/  /!*图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件。*!/
-        itemStyle: {    /!*地图区域的多边形 图形样式*!/
-          normal: {
-            /!*areaColor:'#27408B',*!/
-            areaColor: { // 地图区域的颜色
-              type: 'radial', // 径向渐变
-              x: 0.5, // 圆心 x,y
-              y: 0.5,
-              r: 0.8, // 半径
-              colorStops: [{
-                offset: 0,
-                color: '#4682B4' // 0% 处的颜色
-              }, {
-                offset: 1,
-                color: '#36648B' // 100% 处的颜色
-              }],
-              globalCoord: false // 缺省为 false
-            },
-            /!* borderColor: '#FFFFFF'*!/
-            borderColor: 'rgba(147, 235, 248, 1)', // 图形的描边颜色
-            borderWidth: 1, // 描边宽度 0表示无描边
-            shadowColor: 'rgba(128, 217, 248, 1)', // 阴影颜色
-            shadowOffsetX: -2, /!*阴影水平方向上的偏移距离。*!/
-            shadowOffsetY: 2, /!*阴影垂直方向上的偏移距离。*!/
-            shadowBlur: 10 // 图形阴影的模糊大小
-          },
-          emphasis: {
-            areaColor: '#2a333d',
-            borderWidth: 0
-          }
-        },
-        /!* layoutSize:300*!/
-      },
-      series: [{   /!*北京到各地区*!/
-        type: 'lines',
-        zlevel: 4,
-        effect: {
-         show: true,
-         period: 6,
-         trailLength: 0.1,
-         color: '#DEB887',
-         symbol: 'arrow',   /!*图形 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'*!/
-         symbolSize: 20   /!*标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。*!/
-       },
-       lineStyle: {
-         normal: {
-           color: '#f89801',
-           width: 1,
-           opacity: 0.4,    /!*图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形*!/
-           curveness: 0.2
-         }
-       },
-        data: []
-      }, {
-        type: 'effectScatter', /!* 特效散点图*!/
-        coordinateSystem: 'geo', /!* 'cartesian2d'使用二维的直角坐标系。'geo'使用地理坐标系*!/
-        zlevel: 4,          /!*柱状图所有图形的zlevel值*!/
-        rippleEffect: {   /!*涟漪特效相关配置。*!/
-          period: 4,
-          scale: 2.5,    /!*动画中波纹的最大缩放比例。*!/
-          brushType: 'stroke'    /!*波纹的绘制方式，可选 'stroke' 和 'fill'。*!/
-        },
-        label: {    /!* 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，*!/
-          normal: {
-            show: true,
-            position: 'right',
-            formatter: '{b}'
-          }
-        },
-        symbolSize: 13,
-        itemStyle: {
-          normal: {
-            color: '#000000',
-            borderColor: '#323c48'
-          }
-        },
-        data: []
-      }
-      ],
-      tooltip: {
-        trigger: 'item',
-        formatter:(p)=>{
-          const dataCon = p.data;
-          if (dataCon.warn !== undefined) {
-            const ip = dataCon.warn.split(',');
-            let s = `${dataCon.name}</br>IP:`;
-            for (const i of ip) {
-              s +=  `</br>${i}`
-            }
-            return s
-          }
-          else if(dataCon.name !== undefined){
-            return `${dataCon.name}`
-          }
-        }
-      }
-    });
-    this.myChartMapOption.showLoading();*/
     this.http.get(environment.PUBLIC_URL+'/info/ipAddress').subscribe((req:any)=>{
         function formtGCData(geoData, data, srcNam, dest) {
           const tGeoDt = [];
@@ -2533,121 +2520,15 @@ export class DashboardFirstComponent implements OnInit,AfterViewInit{
           });
           return tGeoDt;
         }
-      /*  if(req.data!=null){*/
-          this.MapOption={
-              title : {
-                text: 'IP攻击实时监控',
-                subtext: '',
-                left: 'center',
-                textStyle: {
-                  fontSize: '24',
-                },
-              },
-              geo: {    /*地理坐标系*/
-                map: 'china',      /*地图类型。world世界地图，china中国地图*/
-                label: {
-                  emphasis: {  /* 是否在高亮状态下显示标签。*/
-                    show: false
-                  }
-                },
-                zoom:1.25,      /*当前视角的缩放比例,即地图的大小*/
-                roam: true,  /*是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启*/
-                /* silent: true,*/  /*图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件。*/
-                itemStyle: {    /*地图区域的多边形 图形样式*/
-                  normal: {
-                    areaColor: { // 地图区域的颜色
-                      type: 'radial', // 径向渐变
-                      x: 0.5, // 圆心 x,y
-                      y: 0.5,
-                      r: 0.8, // 半径
-                      colorStops: [{
-                        offset: 0,
-                        color: '#4682B4' // 0% 处的颜色
-                      }, {
-                        offset: 1,
-                        color: '#36648B' // 100% 处的颜色
-                      }],
-                      globalCoord: false // 缺省为 false
-                    },
-                    /* borderColor: '#FFFFFF'*/
-                    borderColor: 'rgba(147, 235, 248, 1)', // 图形的描边颜色
-                    borderWidth: 1, // 描边宽度 0表示无描边
-                    shadowColor: 'rgba(128, 217, 248, 1)', // 阴影颜色
-                    shadowOffsetX: -2, /*阴影水平方向上的偏移距离。*/
-                    shadowOffsetY: 2, /*阴影垂直方向上的偏移距离。*/
-                    shadowBlur: 10 // 图形阴影的模糊大小
-                  },
-                  emphasis: {
-                    areaColor: '#2a333d',
-                    borderWidth: 0
-                  }
-                },
-              },
-            series: [{   /*北京到各地区*/
-               type: 'lines',
-               zlevel: 4,
-               effect: {
-                 show: true,
-                 period: 6,
-                 trailLength: 0.1,
-                 color: '#DEB887',
-                 symbol: 'arrow',   /*图形 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'*/
-                 symbolSize: 20   /*标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。*/
-               },
-               lineStyle: {
-                 normal: {
-                   color: '#f89801',
-                   width: 1,
-                   opacity: 0.4,    /*图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形*/
-                   curveness: 0.2
-                 }
-               },
-              data: formtGCData(geoCoordMap,  req.data, '北京', true)
-            }, {
-                type: 'effectScatter',   /*特效散点图*/
-                coordinateSystem: 'geo', /* 'cartesian2d'使用二维的直角坐标系。'geo'使用地理坐标系*/
-                zlevel: 4,          /*柱状图所有图形的zlevel值*/
-                rippleEffect: {   /*涟漪特效相关配置。*/
-                  period: 4,
-                  scale: 2.5,    /*动画中波纹的最大缩放比例。*/
-                  brushType: 'stroke'    /*波纹的绘制方式，可选 'stroke' 和 'fill'。*/
-                },
-                label: {    /* 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，*/
-                  normal: {
-                    show: true,
-                    position: 'right',
-                    formatter: '{b}'
-                  }
-                },
-                symbolSize: 13,
-                itemStyle: {
-                  normal: {
-                    color: '#000000',
-                    borderColor: '#323c48'
-                  }
-                },
-              data: formtVData(geoCoordMap,  req.data, '北京')
-            }
-            ],
-            tooltip: {
-              trigger: 'item',
-              formatter:(p)=>{
-                const dataCon = p.data;
-                if (dataCon.warn !== undefined) {
-                  const ip = dataCon.warn.split(',');
-                  let s = `${dataCon.name}</br>IP:`;
-                  for (const i of ip) {
-                    s +=  `</br>${i}`
-                  }
-                  return s
-                } else if(dataCon.name !== undefined){
-                  return `${dataCon.name}`
-                }
-              }
-            }
-          };
-      /*  }*/
-      /*  this.myChartMapOption.hideLoading();*/
+      this.myChartMapOption.setOption({
+        series: [{   /*北京到各地区*/
+          data: formtGCData(geoCoordMap,  req.data, '北京', true)
+        }, {
+          data: formtVData(geoCoordMap,  req.data, '北京')
+        }
+        ],
+      });
+        this.myChartMapOption.hideLoading();
     });
   }
   /*获取警告数据*/
