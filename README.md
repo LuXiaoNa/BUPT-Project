@@ -2,7 +2,7 @@
 
 
 # 部分截图
-
+![Image text](https://github.com/luxinjuan/BUPT-Project/blob/master/src/assets/tmp/img/%E7%99%BB%E5%BD%95%E9%A1%B5.PNG)
 
 <img src="./src/assets/tmp/img/登录页.PNG"/>
 <img src="./src/assets/tmp/img/首页.PNG"/>
